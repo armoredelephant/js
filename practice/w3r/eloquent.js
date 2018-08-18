@@ -687,3 +687,255 @@ let newRooms = rooms.map(x => {
         return x;
     }
 });
+
+let userName = '';
+let userQuestion = 'Will I go to South Carolina?';
+let randomNumber = Math.floor(Math.random() * 8);
+let eightBall = '';
+
+userName ? console.log(`Hello, ${userName}!`) : console.log('Hello!');
+
+console.log(userQuestion);
+
+switch (randomNumber) {
+  case 0:
+    eightBall = 'It is certain' 
+    break;
+  case 1:
+    eightBall = 'It is decidedly so'
+    break;
+  case 2:
+    eightBall = 'Reply hazy try again' 
+    break;
+  case 3:
+    eightBall = 'Cannot predict now'
+    break;
+  case 4:
+    eightBall = 'Do not count on it' 
+    break;
+  case 5:
+    eightBall = 'My sources say no'
+    break;
+  case 6:
+    eightBall = 'Outlook not so good' 
+    break;
+  case 7:
+    eightBall = 'Signs point to yes'
+    break;
+  default:
+    eightBall = 'Dumb question'
+    break;
+}
+
+console.log(`${eightBall}`);
+
+function foo(a) {
+    return b => b * a;
+}
+
+let bar = foo(3);
+
+for (var i = 0; i < 3; i++) {
+    setTimeout(function() {
+        alert(i) }, 1000 + i);
+}
+
+for (let i = 0; i < 3; i++) {
+    setTimeout(function(i_local) {
+        return function() { alert(i_local); }
+    } (i), 1000 + 1);
+}
+
+function createBase(num) {
+    return x => x + num;
+}
+
+let addSix = createBase(6);
+
+let x = 10;
+
+function foo() {
+    let y = x + 5;
+    return y;
+}
+
+function bar() {
+    let x = 2;
+    return foo();
+}
+
+function main() {
+    foo(); // Static scope: 15; Dynamic scope: 15
+    bar(); // Static scope: 15; Dynamic scope: 7
+    return 0;
+}
+
+function numberGenerator() {
+    let num = 10;
+    let checkNumber = () => console.log(num);
+    num++;
+    return checkNumber
+}
+// num = 11 is already stored as closure at this point and lives within the numberGenerator() environment.
+// calling numberGenerator itself will not console log it though. for that we need to call on the inner function below.
+// number will now call checkNumber() and console.log num which is defined already
+
+let number = numberGenerator();
+number();
+// => 11
+
+function sayHello() {
+    let say = () => console.log(hello);
+    let hello = 'Hello, world!';
+    return say;
+}
+
+let callSay = sayHello();
+callSay();
+// => Hello, world!
+
+const SCRIPTS = [{
+    name: "Coptic",
+    ranges: [[994, 1008], [11392, 11508], [11513, 11520]],
+    direction: "ltr",
+    year: -200,
+    living: true,
+    link: "https://www.google.com"
+}];
+
+// function filter(arr, test) {
+//     let passed = [];
+//     for (let element of arr) {
+//         if (test(element)) {
+//             passed.push(element);
+//         }
+//     }
+//     return passed;
+// }
+
+// console.log(filter(SCRIPTS, s => s.living));
+
+let newArr = SCRIPTS.filter(s => s.direction === 'ltr')
+
+// function map(arr, transform) {
+//     let mapped = [];
+//     for (let prop of arr) {
+//             mapped.push(transform(prop));
+//     }
+//     return mapped;
+// }
+
+// console.log(map(SCRIPTS, obj => obj.name));
+
+let mappedArr = SCRIPTS.map(s => s.name);
+
+function reduce(array, combine, start) {
+    let current = start;
+    for (let element of array) {
+        current = combine(current, element);
+    }
+    return current;
+}
+
+console.log(reduce([1,2,3,4], (a,b) => a + b, 0));
+// starts at 0 (index?)
+//  0 + 1 current is 1
+//  1 + 2 current is 3
+//  3 + 3 current is 6
+//  6 + 4 current is 10
+//  => 10
+
+console.log([1,2,3,4].reduce((a, b) => a + b));
+// doesn't need the start bc there is at least 1 element
+
+// to find the script with the most characters
+// ranges: [[994, 1008], [11392, 11508], [11513, 11520]],
+// 0 + 1008 - 994
+// (1008 - 94) + (11508 - 11392)
+// ((1008 - 94) + (11508 - 11392)) + (11520 - 11513);
+function characterCount(script) {
+    return script.ranges.reduce((count, [from, to]) => {
+        return count + (to - from);
+    }, 0);
+}
+
+console.log(SCRIPTS.reduce((a, b) => {
+    return characterCount(a) < characterCount(b) ? b : a;
+}));
+
+function average(arr) {
+    return arr.reduce((a,b) => a + b / array.length);
+}
+
+// passing through average(array of the year of living languages) 
+// average() will add the new array and then devide by the length then round it
+console.log(Math.round(average(
+    // filters SCRIPT array and only gives ones that are living, then maps that array into a new array that only pulls the year of origin
+    SCRIPTS.filter(s => s.living).map(s => s.year))));
+
+console.log(Math.round(average(
+    SCRIPTS.filter(s => !s.living).map(s => s.year))));
+
+// Better for larger data structures:
+let total = 0, count = 0;
+for (let script of SCRIPTS) {
+    if (script.living) {
+        total += script.year;
+        count += 1;
+    }
+}
+
+console.log(Math.round(total / count));
+
+function multiplier(fact, ...numbers) {
+    return numbers.map(number => fact * number);
+}
+
+function testFunction(callback, ...numbers) {
+    return callback(numbers);
+}
+
+function callNum(num) {
+    let arr = num.map(number => `${number} is a number`);
+    return arr;
+}
+
+
+const myObj = [
+    {
+        name: 'Keith',
+        age: 30,
+        isMarried: false,
+        friends: ['Sam', 'jim', 'Yuna']
+    },
+    {
+        name: 'Salleena',
+        age: 27,
+        isMarried: false,
+        friends: ['Leigh', 'Erica', 'Monica', 'Salem']
+    }
+];
+
+// myObj.filter(married => !married.isMarried).map(person => {
+//     let count = 0;
+//     for (let x of person.friends) {
+//         count++
+//     }
+//     return `${person.name} is ${person.age} years old, is not married, and has ${count} friends.`
+// });
+
+const str = myObj.filter(married => !married.isMarried).map(person => {
+    return `${person.name} is ${person.age} years old, is not married, and has ${count(person.friends)} friends.`
+});
+
+function count(num) {
+    let count = 0;
+    for (let x of num) {
+        ++count;
+    }
+    return count;
+}
+
+
+
+
