@@ -891,8 +891,12 @@ function multiplier(fact, ...numbers) {
     return numbers.map(number => fact * number);
 }
 
+// function testFunction(callback, ...numbers) {
+//     return callback(numbers);
+// }
+
 function testFunction(callback, ...numbers) {
-    return callback(numbers);
+    return callback(numbers)
 }
 
 function callNum(num) {
@@ -916,26 +920,171 @@ const myObj = [
     }
 ];
 
-// myObj.filter(married => !married.isMarried).map(person => {
-//     let count = 0;
-//     for (let x of person.friends) {
-//         count++
-//     }
-//     return `${person.name} is ${person.age} years old, is not married, and has ${count} friends.`
+const otherObj = [
+    {
+        name: 'Michael',
+        age: 30,
+        isMarried: false,
+        friends: ['Laura', 'Jason']
+    },
+    {
+        name: 'Jason',
+        age: 40,
+        isMarried: false,
+        friends: ['Juan']
+    }
+]
+
+const allObj = [myObj, otherObj];
+
+const objNames = allObj
+    .reduce((acc, currVal) => {
+        return acc.concat(currVal);
+    })
+    .filter(person => {
+        return person.isMarried == false;
+    })
+    .filter(person => {
+        return person.friends.length >= 3;
+    })
+    .map(person => person.name);
+
+function listNames(person) {
+    for (let name of person) {
+       return `${name} is not married and has at least 3 friends.`
+    }
+}
+// let str = `${objNames[0]}, ${objNames[1]}, and ${objNames[2]}, are all over the age of 30.`;
+console.log(listNames(objNames));
+
+// const str = myObj.filter(married => !married.isMarried).map(person => {
+//     return `${person.name} is ${person.age} years old, is not married, and has ${count(person.friends)} friends.`
 // });
 
-const str = myObj.filter(married => !married.isMarried).map(person => {
-    return `${person.name} is ${person.age} years old, is not married, and has ${count(person.friends)} friends.`
-});
+// function count(num) {
+//     let count = 0;
+//     for (let x of num) {
+//         ++count;
+//     }
+//     return count;
+// }
 
-function count(num) {
+// const myFun = obj => obj.name.toLowerCase();
+// const lowerCaseNames = myObj.map(myFun);
+
+// console.log(`${lowerCaseNames[0]} is lowercase and ${lowerCaseNames[1]} is lowercase`);
+
+// const newList = myObj.map(person => {
+//     const {name, age, ...rest} = person;
+//     return {
+//         name,
+//         ...rest,
+//         basicCount: 0,
+//         spotifyUrl: "let's just pretend"
+//     };
+// });
+
+function range(start, end) {
+    let arr = [];
+    for (let x = start; x <= end; x++) {
+        arr.push(x);
+    }
+    return arr;
+}
+
+function sum(numbers) {
     let count = 0;
-    for (let x of num) {
-        ++count;
+    for (let int of numbers) {
+        count += int
     }
     return count;
 }
 
 
+function range(start, end, step = start < end ? 1 : -1) {
+    let arr = [];
+    if (start > 0) {
+        for (let i = start; i <= end; i += step) arr.push(i);
+    } else {
+        for (let i = start; i >= end; i += step) arr.push(i);
+    }
+    return arr;
+}
 
+function reverseArray(arr) {
+    let newArr = [];
+    for (let num of arr) {
+        newArr.unshift(num);
+    }
+    return newArr;
+}
+
+function fizzBuzz(arg) {
+    for (let count = 0; count <= arg; count++) {
+        let results = '';
+        if (count > 0) {
+            if (count % 5 === 0) results = 'Buzz';
+            if (count % 3 === 0) results = 'Fizz';
+            if (count % 3 === 0 && count % 5 === 0) results = 'FizzBuzz';
+        }
+        console.log(results || count);
+    }
+}
+
+// function arrayToList(...numbers) {
+//     let list = {};
+//     for (let val of numbers) {
+//         list = {value: val, rest: list};
+//     }
+//     return list;
+// }
+
+function arrayToList(arr) {
+    let list = {};
+    for (i = 0; i < arr.length; i++) {
+        if (arr[arr.length - 1]) {
+            list = {value: arr[i], rest: null}
+        } else {
+            list = {value: arr[i], rest: list}
+        }
+    }
+    return list;
+}
+
+function arrayToList(arr) {
+    let list = {};
+    for (i = arr.length - 1; i >= 0; --i) {
+        i === arr.length - 1 ? list = {value: arr[i], rest: null} : list = {value: arr[i], rest: list};
+    }
+    return list;
+}
+
+function arrayToList(...num) {
+    let x = num.reverse();
+    let list = {};
+    for (let val of x) {
+        val === x[0] ? list = {value: val, rest: null} : list = {value: val, rest: list};
+    }
+    return list;
+}
+
+function listToArray(list) {
+    let arr = [];
+    for (let node = list; node; node = node.rest) {
+        arr.push(node.value);
+    }
+    return arr;
+}
+
+function prepend(ele, list) {
+    list = {value: ele, rest: list}
+    return list;
+}
+
+function nth(list, num) {
+    if (num === 0) {
+        return list.value;
+    }
+    return list = nth(list.rest, num - 1)
+};
 
