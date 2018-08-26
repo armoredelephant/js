@@ -974,15 +974,23 @@ console.log(listNames(objNames));
 
 // console.log(`${lowerCaseNames[0]} is lowercase and ${lowerCaseNames[1]} is lowercase`);
 
-// const newList = myObj.map(person => {
-//     const {name, age, ...rest} = person;
-//     return {
-//         name,
-//         ...rest,
-//         basicCount: 0,
-//         spotifyUrl: "let's just pretend"
-//     };
-// });
+const newList = myObj.map(person => {
+    const {name, age, ...rest} = person;
+    return {
+        name,
+        ...rest,
+        basicCount: 0,
+        spotifyUrl: "let's just pretend"
+    };
+});
+
+const newList = otherObj.map(person => {
+    const {name, ...rest} = person;
+    return {
+        ...rest,
+        new: true
+    };
+});
 
 function range(start, end) {
     let arr = [];
@@ -1088,3 +1096,90 @@ function nth(list, num) {
     return list = nth(list.rest, num - 1)
 };
 
+
+
+
+function range(start, end) {
+    let arr = [];
+    for (let num = start; num <= end; num++) {
+        arr.push(num);
+    }
+    return arr;
+}
+
+function sum(arr) {
+    count = 0;
+    for (let num of arr) {
+        count += num;
+    }
+    return count;
+}
+
+function range(start, end, step = start < end ? 1 : -1) {
+    let arr = [];
+    if (start > 0) {
+        for (let num = start; num <= end; num += step) arr.push(num); 
+    } else {
+        for (let num = start; num >= end; num += step) arr.push(num);
+    }
+    return arr;
+}
+
+
+function reverseArray(arr) {
+    let newArr = [];
+    for (let item of arr) {
+        newArr.unshift(item);
+    }
+    return newArr;
+}
+
+function arrayToList(arr) {
+    let list = {};
+    for (let i = arr.length - 1; i >= 0; i--) {
+       i === arr.length - 1 ? list = {value: arr[i], rest: null } : list = {value: arr[i], rest: list};
+    }
+    return list;
+}
+
+function arrayToList(...num) {
+    let rev = num.reverse();
+    let list = {};
+    for (let i of rev) {
+        i === i[0] ? list = {value: i, rest: null} : list = {value: i, rest: list};
+    }
+    return list;
+}
+
+function listToArray(list) {
+    let arr = [];
+    for (let node = list; node; node = node.rest) {
+        arr.push(node.value);
+    }
+    return arr;
+}
+
+function deepEqual(arg1, arg2) {
+    let arr1 = arg1.keys();
+    let arr2 = arg2.keys();
+    if (typeof arg1 != typeof arg2) {
+        return false;
+    } else {
+
+    }
+
+}
+
+let deepEqual = (arg1, arg2) => {
+    if (arg1 === arg2) return true;
+
+    if (arg1 == null || typeof arg1 != 'object' || arg2 == null || typeof arg2 != 'object') return false;
+
+    let arr1 = Object.keys(arg1), arr2 = Object.keys(arg2);
+
+    if (arr1.length != arr2.length) return false;
+    for (let prop in arg1) {
+        if (!arr2.includes(prop) || !deepEqual(arg1[prop], arg2[prop])) return false;
+    }
+    return true;
+}

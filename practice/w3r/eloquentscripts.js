@@ -1112,31 +1112,72 @@ var SCRIPTS = [
       link: "https://en.wikipedia.org/wiki/Mongolian_writing_systems#Horizontal_square_script"
     }
   ];
+  
 
- let mappedArr = SCRIPTS.map(s => s.name);
+  function filter(array, test) {
+      let passed = [];
+      for (let element of array) {
+          if (test(element)) {
+              passed.push(element);
+          }
+      }
+      return passed;
+  }
 
- let filteredArr = SCRIPTS.filter(s => s.living);
+  console.log(filter(SCRIPTS, script => script.living));
+//  => [{name: "Adlam", ...}, ...];
 
-function average(arr) {
-        return arr.reduce((a,b) => a + b) / arr.length;
+function map(array, transform) {
+    let mapped = [];
+    for (let element of array) {
+        mapped.push(transform(element));
     }
+    return mapped;
+}
+
+let rtlScripts = SCRIPTS.filter(s => s.direction == 'rtl');
+
+console.log(map(rtlScripts, s => s.name));
+// logs an array containing the names of each script that uses right to left.
+
+let rtlNames = rtlScripts.map(s => s.name);
+
+function reduce(array, combine, start) {
+  let current = start;
+  for (let element of array) {
+    current = combine(current, element);
+  }
+  return current;
+}
+
+console.log(reduce([1,2,3,4], (a,b) => a + b, 0));
+// => 10
+
+console.log([1,2,3,4].reduce((a, b) => a + b));
+// => 10
+
+function charCount(script) {
+  return script.ranges.reduce((count, [from, to]) => {
+    return count + (to - from);
+  }, 0);
+}
+
+console.log(SCRIPTS.reduce((a, b) => {
+  return charCount(a) < charCount(b) ? b : a;
+}));
+//  => {name: 'Han', ...}
+
+function average(array) {
+  return array.reduce((a, b) => a + b) / array.length;
+}
 
 console.log(Math.round(average(
-    SCRIPTS.filter(s => s.living).map(s => s.year))));
+  SCRIPTS.filter(s => s.living).map(s => s.year)
+)));
+// => 1188 average year of living lnguages
 
 console.log(Math.round(average(
-    SCRIPTS.filter(s => !s.living).map(s => s.year))));
-
-// first we take the array, grab just the ones living or not living
-// then we make a new array with just the years of each => living || !living
-// then we reduce it year += year = total
-// then we divide the total of each by the array's length
-//  then we round
-
-
-console.log(SCRIPTS.map(s => s.name + 'this'));
-
-let y = [1,2,3,4,5];
-let x = [6,7,8,9];
-y.concat(x);
+  SCRIPTS.filter(s => !s.living).map(s => s.year)
+)));
+// => 188 average year of dead languages
 
