@@ -1219,7 +1219,8 @@ function textScripts(text) {
     let script = charScript(char.codePointAt(0));
     return script ? script.name : "none";
   }).filter(({name}) => name != "none");
-  // creates an array of all script objects that contain the character
+  // checks a string and creates an array of objects with a count on which script the chatacter was found in
+  // filter drops all objects that had a name of none meaning they werent found in any script
   // {name: "Han", count: 11}
   // {name: "Latin", count: 4}
   // {name: "Cyrillic", count: 3}
@@ -1242,4 +1243,3 @@ function textScripts(text) {
 
 console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
 // => 61% Han, 22% Latin, 17% Cryillic
-
