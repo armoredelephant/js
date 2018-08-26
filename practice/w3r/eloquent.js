@@ -1183,3 +1183,77 @@ let deepEqual = (arg1, arg2) => {
     }
     return true;
 }
+
+function repeat(n, action) {
+    for (let i = 1; i < n + 1; i++) {
+        action(i);
+    }
+}
+
+function unless(test, then) {
+    if (!test) then();
+}
+
+repeat(5, n => {
+    unless(n % 2 === 0, () => {
+        console.log(`${n} is an odd number.`);
+    });
+});
+
+
+
+function repeat(n, action) {
+    for (let i = 0; i < n; i++) {
+        action(i);
+    }
+}
+
+function unless(test, then) {
+    if (!test) then();
+}
+
+repeat(7, n => {
+    unless(n % 2 === 0, () => {
+        console.log(`${n} is not an even number`);
+    });
+});
+
+function average(array) {
+    return array.reduce((a,b) => a + b / array.length);
+}
+
+console.log(Math.round(average(
+    SCRIPTS.filter(s => s.living).map(s => s.year))));
+// will average out the origin year of all living scripts
+
+console.log(Math.round(average(
+    SCRIPTS.filter(s => !s.living).map(s => s.years))));
+
+let total = 0, count = 0;
+for (let script of SCRIPTS) {
+    if (script.living) {
+        total += script.year;
+        count += 1;
+    }
+}
+console.log(Math.round(total / count));
+// => 1188
+
+// *** FLATTENING ***
+
+let arr1 = [
+    [1,2,3],
+    [4,5,6]
+];
+
+arr1.reduce((a, b) => a.concat(b));
+
+let newArr = arr1.reduce((a, b) => a.concat(b));
+console.log(newArr);
+
+// *** YOUR OWN LOOP ***
+
+
+
+
+
