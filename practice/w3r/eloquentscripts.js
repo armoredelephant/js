@@ -1181,3 +1181,65 @@ console.log(Math.round(average(
 )));
 // => 188 average year of dead languages
 
+function charScript(code) {
+  for (let script of SCRIPTS) {
+    if (script.ranges.some(([from, to]) => {
+      return code >= from && code < to;
+    })) {
+      // if the some() check return true, then it will return that script
+      return script;
+    }
+  }
+  // if no script gets returned from the above check, then it will return null
+  return null
+}
+
+console.log(charScript(121));
+// => {name: "Latin", ...}
+
+function countBy(items, groupName) {
+  let counts = [];
+  for (let item of items) {
+    let name = groupName(item);
+    let known = counts.findIndex(c => c.name == name);
+    if (known == -1) {
+      counts.push({name, count: 1});
+    } else {
+      counts[known].count++;
+    }
+  }
+  return counts;
+}
+
+console.log(countBy([1,2,3,4,5], n => n > 2));
+
+function textScripts(text) {
+  
+  let scripts = countBy(text, char => {
+    let script = charScript(char.codePointAt(0));
+    return script ? script.name : "none";
+  }).filter(({name}) => name != "none");
+  // creates an array of all script objects that contain the character
+  // {name: "Han", count: 11}
+  // {name: "Latin", count: 4}
+  // {name: "Cyrillic", count: 3}
+  console.log(scripts);
+
+  let total = scripts.reduce((n, {count}) => n + count, 0);
+  if (total == 0) return "No scripts found";
+  // reduce is ran on the newly built scripts array to add up the count
+  // => 18 for the current one 11 + 4 + 3
+  console.log(total);
+
+  return scripts.map(({name, count}) => {
+    return `${Math.round(count * 100 / total)}% ${name}`;
+  }).join(", ");
+  // Creates a new array by mapping scripts.
+  // It takes the count from each index, then * 100, and divides by the total
+  // [`61% Han`, `22% Latin`, `17% Cyrillic`]
+  // then it joins on the each index with `, `
+}
+
+console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
+// => 61% Han, 22% Latin, 17% Cryillic
+
