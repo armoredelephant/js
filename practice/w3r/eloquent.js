@@ -1251,6 +1251,8 @@ arr1.reduce((a, b) => a.concat(b));
 let newArr = arr1.reduce((a, b) => a.concat(b));
 console.log(newArr);
 
+arrays.reduce((flat, current) => flat.concat(current), []);
+
 // *** YOUR OWN LOOP ***
 
 function loop(val, test, update, body) {
@@ -1302,6 +1304,8 @@ console.log(every([1,2,3], n => n < 10));
 // => true
 console.log(every([1,2,11], n => n < 10));
 // => false
+
+// *** DOMINANT DIRECTION ***
 
 function countBy(items, groupName) {
     let counts = [];
