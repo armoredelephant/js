@@ -1253,7 +1253,66 @@ console.log(newArr);
 
 // *** YOUR OWN LOOP ***
 
+function loop(val, test, update, body) {
+    let current = val;
+    
+    if (test(current) === false) return;
 
+    while (test(current)) {
+            body(current);
+            current = update(current)
+    }
+}
 
+loop(3, n => n > 0, n => n - 1, console.log);
+// => 3
+// => 2
+// => 1
 
+// *** EVERYTHING ***
 
+function every(array, test) {
+    for (let item of array) {
+       if (!test(item)) return false;
+    }
+    return true;
+}
+
+console.log(every([1,2,3], n => n < 10));
+// => true
+console.log(every([1,20,11], n => n < 10));
+// => false
+
+function every(array, test) {
+       return !array.some(element => !test(element));
+}
+// ????????????????????????????
+console.log(every([1,2,3], n => n < 10));
+// => true
+console.log(every([1,2,11], n => n < 10));
+// => false
+
+function charScript(code) {
+    for (let script of SCRIPTS) {
+      if (script.ranges.some(([from, to]) => {
+        return code >= from && code < to;
+      })) {
+        return script;
+      }
+    }
+    return null
+  }
+
+  function countBy(items, groupName) {
+    let counts = [];
+    for (let item of items) {
+      let name = groupName(item);
+      let known = counts.findIndex(c => c.name == name);
+      if (known == -1) {
+        counts.push({name, count: 1});
+      } else {
+        counts[known].count++;
+      }
+    }
+    return counts;
+  }

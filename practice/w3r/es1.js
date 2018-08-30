@@ -1112,182 +1112,69 @@ var SCRIPTS = [
       link: "https://en.wikipedia.org/wiki/Mongolian_writing_systems#Horizontal_square_script"
     }
   ];
-  
 
-  function filter(array, test) {
-      let passed = [];
-      for (let element of array) {
-          if (test(element)) {
-              passed.push(element);
-          }
+  function countBy(items, groupName) {
+    let counts = [];
+    for (let item of items) {
+      let direction = groupName(item)
+      let known = counts.findIndex(c => c.direction == direction);
+      if (known == -1) {
+        counts.push({direction, count: 1});
+      } else {
+        counts[known].count++;
       }
-      return passed;
-  }
-
-  console.log(filter(SCRIPTS, script => script.living));
-//  => [{name: "Adlam", ...}, ...];
-
-function map(array, transform) {
-    let mapped = [];
-    for (let element of array) {
-        mapped.push(transform(element));
     }
-    return mapped;
-}
-
-let rtlScripts = SCRIPTS.filter(s => s.direction == 'rtl');
-
-console.log(map(rtlScripts, s => s.name));
-// logs an array containing the names of each script that uses right to left.
-
-let rtlNames = rtlScripts.map(s => s.name);
-
-function reduce(array, combine, start) {
-  let current = start;
-  for (let element of array) {
-    current = combine(current, element);
+    return counts;
   }
-  return current;
-}
 
-console.log(reduce([1,2,3,4], (a,b) => a + b, 0));
-// => 10
-
-console.log([1,2,3,4].reduce((a, b) => a + b));
-// => 10
-
-function charCount(script) {
-  return script.ranges.reduce((count, [from, to]) => {
-    return count + (to - from);
-  }, 0);
-}
-
-console.log(SCRIPTS.reduce((a, b) => {
-  return charCount(a) < charCount(b) ? b : a;
-}));
-//  => {name: 'Han', ...}
-
-function average(array) {
-  return array.reduce((a, b) => a + b) / array.length;
-}
-
-console.log(Math.round(average(
-  SCRIPTS.filter(s => s.living).map(s => s.year)
-)));
-// => 1188 average year of living lnguages
-
-console.log(Math.round(average(
-  SCRIPTS.filter(s => !s.living).map(s => s.year)
-)));
-// => 188 average year of dead languages
-
-function charScript(code) {
-  for (let script of SCRIPTS) {
-    if (script.ranges.some(([from, to]) => {
-      return code >= from && code < to;
-    })) {
-      // if the some() check return true, then it will return that script
-      return script;
-    }
-  }
-  // if no script gets returned from the above check, then it will return null
-  return null
-}
-
-console.log(charScript(121));
-// => {name: "Latin", ...}
-
-function countBy(items, groupName) {
-  let counts = [];
-  for (let item of items) {
-    let name = groupName(item);
-    let known = counts.findIndex(c => c.name == name);
-    if (known == -1) {
-      counts.push({name, count: 1});
-    } else {
-      counts[known].count++;
-    }
-  }
-  return counts;
-}
-
-console.log(countBy([1,2,3,4,5], n => n > 2));
-
-function textScripts(text) {
-  
-  let scripts = countBy(text, char => {
-    let script = charScript(char.codePointAt(0));
-    return script ? script.name : "none";
-  }).filter(({name}) => name != "none");
-  // checks a string and creates an array of objects with a count on which script the chatacter was found in
-  // filter drops all objects that had a name of none meaning they werent found in any script
-  // {name: "Han", count: 11}
-  // {name: "Latin", count: 4}
-  // {name: "Cyrillic", count: 3}
-  console.log(scripts);
-
-  let total = scripts.reduce((n, {count}) => n + count, 0);
-  if (total == 0) return "No scripts found";
-  // reduce is ran on the newly built scripts array to add up the count
-  // => 18 for the current one 11 + 4 + 3
-  console.log(total);
-
-  return scripts.map(({name, count}) => {
-    return `${Math.round(count * 100 / total)}% ${name}`;
-  }).join(", ");
-  // Creates a new array by mapping scripts.
-  // It takes the count from each index, then * 100, and divides by the total
-  // [`61% Han`, `22% Latin`, `17% Cyrillic`]
-  // then it joins on the each index with `, `
-}
-
-console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
-// => 61% Han, 22% Latin, 17% Cryillic
-
-
-function textScripts(text) {
-  
-  let scripts = countBy(text, char => {
-    let script = charScript(char.codePointAt(0));
-    return script ? script.name : "none";
-  }).filter(({name}) => name != "none");
-
-  let total = scripts.reduce((n, {count}) => n + count, 0);
-  if (total == 0) return "No scripts found";
-
-  return scripts.map(({name, count}) => {
-    return `${Math.round(count * 100 / total)}% ${name}`;
-  }).join(", ");
-}
-
-console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
-// => 61% Han, 22% Latin, 17% Cryillic
-
-
-
-
-function charCount(code) {
-  for (let script of SCRIPTS) {
-    if (script.ranges.some(([from, to]) => {
-        return code >= from && code <= to;
+  function charScript(code) {
+    for (let script of SCRIPTS) {
+      if (script.ranges.some(([from, to]) => {
+        return code >= from && code < to;
       })) {
-      return script;
+        return script;
+      }
     }
+    return null
   }
-  return null;
+
+  function dominantDirection(text) {
+    let scripts = countBy(text, char => {
+        let script = charScript(char.codePointAt(0));
+        return script ? script.direction : "none";
+      }).filter(({direction}) => direction != "none");
+
+      let dominantScript = scripts.reduce((a, b) => {
+       return a.count < b.count ? b : a;
+      });
+
+      return dominantScript.direction;
+  }
+  
+        // let count = 0;
+      // let result = null;
+      // for (let script of scripts) {
+      //   if (script.count > count) {
+      //     result = script;
+      //     count = script.count;
+      //   }
+      // }
+
+function fizzBuzz(num) {
+  for (let i = 1; i <= num; i++) {
+    let results = '';
+    if (i % 3 === 0) results += 'Fizz';
+    if (i % 5 === 0) results += 'Buzz';
+    console.log(results || i);
+  }
 }
 
-function countBy(items, groupName) {
-  let counts = [];
-  for (let item of items) {
-    // name is going to be true or false based on the check function in groupName
-    let name = groupName(item);
-    let known = counts.findIndex(c => c.name == name);
-    if (known == -1) {
-      counts.push({name, count: 1});
-    } else {
-      counts[known].count++;
-    }
+(function () {
+  for (let i = 1; i <= 100; i++) {
+    let results = '';
+    if (i % 3 == 0) results += 'fizz';
+    if (i % 5 == 0) results += 'Buzz';
+    console.log(results || i);
   }
-  return counts;
-}
+})();
+
