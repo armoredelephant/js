@@ -1256,11 +1256,22 @@ console.log(newArr);
 function loop(val, test, update, body) {
     let current = val;
     
-    if (test(current) === false) return;
+    if (!test(current)) return;
 
     while (test(current)) {
             body(current);
             current = update(current)
+    }
+}
+
+loop(3, n => n > 0, n => n - 1, console.log);
+// => 3
+// => 2
+// => 1
+
+function loop(start, test, update, body) {
+    for(let val = start; test(val); val = update(val)) {
+        body(val);
     }
 }
 
@@ -1292,7 +1303,21 @@ console.log(every([1,2,3], n => n < 10));
 console.log(every([1,2,11], n => n < 10));
 // => false
 
-function charScript(code) {
+function countBy(items, groupName) {
+    let counts = [];
+    for (let item of items) {
+      let name = groupName(item)
+      let known = counts.findIndex(c => c.name == name);
+      if (known == -1) {
+        counts.push({name, count: 1});
+      } else {
+        counts[known].count++;
+      }
+    }
+    return counts;
+  }
+
+  function charScript(code) {
     for (let script of SCRIPTS) {
       if (script.ranges.some(([from, to]) => {
         return code >= from && code < to;
@@ -1303,16 +1328,13 @@ function charScript(code) {
     return null
   }
 
-  function countBy(items, groupName) {
-    let counts = [];
-    for (let item of items) {
-      let name = groupName(item);
-      let known = counts.findIndex(c => c.name == name);
-      if (known == -1) {
-        counts.push({name, count: 1});
-      } else {
-        counts[known].count++;
-      }
-    }
-    return counts;
+  function dominantDirection(text) {
+    let counted = countBy (text, char => {
+      let script = charScript(char.codePointAt(0));
+      return script ? script.direction : "none";
+    }).filter(({name}) => name != 'none');
+
+    if (counted.length == 0) return 'ltr'
+
+    return counted.reduce((a, b) => a.count < b.count ? b : a).name;
   }

@@ -1113,13 +1113,51 @@ var SCRIPTS = [
     }
   ];
 
+  // function countBy(items, groupName) {
+  //   let counts = [];
+  //   for (let item of items) {
+  //     let direction = groupName(item)
+  //     let known = counts.findIndex(c => c.direction == direction);
+  //     if (known == -1) {
+  //       counts.push({direction, count: 1});
+  //     } else {
+  //       counts[known].count++;
+  //     }
+  //   }
+  //   return counts;
+  // }
+
+  // function charScript(code) {
+  //   for (let script of SCRIPTS) {
+  //     if (script.ranges.some(([from, to]) => {
+  //       return code >= from && code < to;
+  //     })) {
+  //       return script;
+  //     }
+  //   }
+  //   return null
+  // }
+
+  // function dominantDirection(text) {
+  //   let scripts = countBy(text, char => {
+  //       let script = charScript(char.codePointAt(0));
+  //       return script ? script.direction : "none";
+  //     }).filter(({direction}) => direction != "none");
+
+  //     let dominantScript = scripts.reduce((a, b) => {
+  //      return a.count < b.count ? b : a;
+  //     });
+
+  //     return dominantScript.direction;
+  // }
+
   function countBy(items, groupName) {
     let counts = [];
     for (let item of items) {
-      let direction = groupName(item)
-      let known = counts.findIndex(c => c.direction == direction);
+      let name = groupName(item)
+      let known = counts.findIndex(c => c.name == name);
       if (known == -1) {
-        counts.push({direction, count: 1});
+        counts.push({name, count: 1});
       } else {
         counts[known].count++;
       }
@@ -1139,42 +1177,30 @@ var SCRIPTS = [
   }
 
   function dominantDirection(text) {
-    let scripts = countBy(text, char => {
-        let script = charScript(char.codePointAt(0));
-        return script ? script.direction : "none";
-      }).filter(({direction}) => direction != "none");
+    let counted = countBy (text, char => {
+      let script = charScript(char.codePointAt(0));
+      return script ? script.direction : "none";
+    }).filter(({name}) => name != 'none');
 
-      let dominantScript = scripts.reduce((a, b) => {
-       return a.count < b.count ? b : a;
-      });
+    if (counted.length == 0) return 'ltr'
 
-      return dominantScript.direction;
+    return counted.reduce((a, b) => a.count < b.count ? b : a).name;
   }
-  
-        // let count = 0;
-      // let result = null;
-      // for (let script of scripts) {
-      //   if (script.count > count) {
-      //     result = script;
-      //     count = script.count;
-      //   }
-      // }
 
-function fizzBuzz(num) {
-  for (let i = 1; i <= num; i++) {
-    let results = '';
-    if (i % 3 === 0) results += 'Fizz';
-    if (i % 5 === 0) results += 'Buzz';
-    console.log(results || i);
-  }
-}
+// function fizzBuzz(num) {
+//   for (let i = 1; i <= num; i++) {
+//     let results = '';
+//     if (i % 3 === 0) results += 'Fizz';
+//     if (i % 5 === 0) results += 'Buzz';
+//     console.log(results || i);
+//   }
+// }
 
-(function () {
-  for (let i = 1; i <= 100; i++) {
-    let results = '';
-    if (i % 3 == 0) results += 'fizz';
-    if (i % 5 == 0) results += 'Buzz';
-    console.log(results || i);
-  }
-})();
-
+// (function () {
+//   for (let i = 1; i <= 100; i++) {
+//     let results = '';
+//     if (i % 3 == 0) results += 'fizz';
+//     if (i % 5 == 0) results += 'Buzz';
+//     console.log(results || i);
+//   }
+// })();
