@@ -43,3 +43,14 @@ function normalize() {
 
 normalize.call({coords: [0,2,3], length: 5});
 // => Array of undefined
+
+let protoRabbit = {
+    speak(line) {
+        console.log(`The ${this.type} rabbit says, ${line}.`);
+    }
+}
+
+let killerRabbit = Object.create(protoRabbit);
+killerRabbit.type = `killer`;
+killerRabbit.speak('SKREE!!!');
+
