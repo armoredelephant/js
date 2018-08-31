@@ -63,3 +63,37 @@ createPhoneNumber([1,2,3,4,5,6,7,8,9,0]);
 // ******************************************************************
 // *** NEXT ***
 // ******************************************************************
+
+// maskify
+
+function maskify(arg) {
+    let str = arg.toString(),
+        cut = str.length - 4,
+        shown = str.substring(cut),
+        arr = str.split(''),
+        hidden = [];
+        
+        arr.forEach(() => hidden.push('#'));
+
+    return hidden.join('') + shown;
+}
+
+function maskify(cc) {
+    let str = cc.toString(),
+        cut = str.length - 4,
+        shown = str.substring(cut),
+        arr = str.substring(0, cut).split(''),
+        hidden = arr.map(n => n = '#').join('');
+
+    return hidden + shown;
+}
+
+// *** BEST PRACTICE ***
+
+function maskify(cc) {
+    return cc.slice(0, -4).replace(/./g, '#') + cc.slice(-4);
+}
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
