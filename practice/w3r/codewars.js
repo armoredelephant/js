@@ -97,3 +97,28 @@ function maskify(cc) {
 // ******************************************************************
 // *** NEXT ***
 // ******************************************************************
+
+// printer string
+// string should be >= 1 and only contain letters a-z
+function print_error(s) {
+    let errors = 0,
+        denom = s.length;
+
+    if (!s.match(/[a-z]/i) || s.match(/[A-Z]/g)) return "This is an invalid string";
+    errors += (s.match(/[n-z]/g) || []).length;
+
+    return `${errors}/${denom}`;
+    // return errors + "/" + denom;
+}
+
+// *** BEST PRACTICE ***
+
+function print_error(s) {
+    // s.math(/[^a-m]/g).length will match all characters that are not a-m and count the length
+    return s.match(/[^a-m]/g).length + '/' + s.length;
+}
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
