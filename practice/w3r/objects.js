@@ -105,3 +105,41 @@ orangeRabbit.speak("I'm orange!");
 
 let object = new class { getWord() { return "hello"; } };
 console.log(object.getWord());
+
+Rabbit.prototype.teeth = "small";
+console.log(insaneRabbit.teeth);
+
+insaneRabbit.teeth = "long, sharp, and bloody";
+console.log(insaneRabbit.teeth);
+
+console.log(orangeRabbit.teeth);
+console.log(Rabbit.prototype.teeth);
+
+// let ages = {
+//     Boris: 39,
+//     Liang: 22,
+//     Julia: 62
+//   };
+  
+//   console.log(`Julia is ${ages["Julia"]}`);
+  // → Júlia is 62
+//   console.log("Is Jack's age known?", "Jack" in ages);
+  // → Is Jack's age known? false
+//   console.log("Is toString's age known?", "toString" in ages);
+  // → Is toString's age known? true
+
+//   Can create Objects that do not derive from Object.prototype using Object.create(null);
+console.log("toString" in Object.create(null)) ;
+
+let ages = new Map();
+ages.set("Boris", 39);
+ages.set("Liang", 22);
+ages.set("Julia", 62);
+
+console.log(`Julia is ${ages.get("Julia")}`);
+//   => Julia is 62
+console.log(`Is Jack's age known?`, ages.has("Jack"));
+//  => Is Jack's age known? false
+console.log(ages.has("toString"));
+//  => false
+console.log(ages);
