@@ -153,6 +153,15 @@ function isTriangle(a, b, c) {
     return a + b > c;
 }
 
+// *** ANOTHER WAY I THOUGHT OF AFTER WATCHING OBJECT VIDEOS ***
+
+function isTriangle(a, b, c) {
+    let sortedArguments = Array.from(arguments).sort((a, b) => a - b);
+    if (sortedArguments.includes(0)) return false;
+
+    return a + b > c;
+}
+
 // *** CLEVER (easier version of what I did ***
 
 function isTriangle(a,b,c) {
