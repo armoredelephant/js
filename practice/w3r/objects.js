@@ -143,3 +143,18 @@ console.log(`Is Jack's age known?`, ages.has("Jack"));
 console.log(ages.has("toString"));
 //  => false
 console.log(ages);
+
+// ******************************************************************
+// *** POLYMORPHISM ***
+// ******************************************************************
+
+Rabbit.prototype.toString = function() {
+    return `a ${this.type} rabbit`;
+}
+
+console.log(String(orangeRabbit));
+
+// ******************************************************************
+// *** SYMBOLS ***
+// ******************************************************************
+
