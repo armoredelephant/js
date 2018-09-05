@@ -158,3 +158,31 @@ console.log(String(orangeRabbit));
 // *** SYMBOLS ***
 // ******************************************************************
 
+let sym = Symbol("name");
+console.log(sym == Symbol("name"));
+Rabbit.prototype[sym] = 55;
+console.log(orangeRabbit[sym]);
+// ends up being assigned under __proto__ > Symbol(name): 55
+
+const toStringSymbol = Symbol("toString");
+const toStringSecondSymbol = Symbol("toString");
+Array.prototype[toStringSymbol] = function() {
+    return `${this.length} cm of blue yarn`;
+};
+
+Array.prototype[toStringSecondSymbol] = function() {
+    return `This array has ${this.length} indexes.`;
+};
+
+// Array.prototype now has two Symbol(toString): f (); tied to it.
+// Basically just another method tied to a prototype and can be delegated to everything using that prototype.
+
+console.log([1,2].toString());
+
+console.log([1,2][toStringSymbol]());
+console.log([1,2][toStringSecondSymbol]());
+
+let stringObject = {
+    [toStringSymbol]() { return "a jute rope"; }
+};
+console.log(stringObject[toStringSymbol]());
