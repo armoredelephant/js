@@ -181,11 +181,43 @@ function isTriangle(a,b,c) {
 // *** NEXT ***
 // ******************************************************************
 
-// placeholder
+/* You have an array of numbers.
+Your task is to sort ascending odd numbers but even numbers must be in the same place.
+*/
+
+function sortArray(array) {
+    // [5, 3, 2, 8, 1, 4] => [1, 3, 2, 8, 5 ,4]
+    let oddArray = [],
+        finalArray = [];
+    
+    if (array.length == 0) return array;    
+    // Loop through the array once and determine if odd or even.
+    // Push all odd into a new array
+    for (let i of array) {
+        if (i % 2 == 1) oddArray.unshift(i);
+        console.log(oddArray);
+    }
+
+    oddArray = oddArray.sort((a,b) => a - b);
+    // Loop through array, if odd finalArray.push(oddArray.shift());
+    // if even finalArray.push(arr[i]);
+    for (let i = 0; i < array.length; i++) {
+        array[i] % 2 == 1 ? finalArray.push(oddArray.shift()) : finalArray.push(array[i]);
+    }
+
+    return finalArray;
+}
 
 
+// *** BEST PRACTICE ***
 
+function sortArray(array) {
+    const oddArray = array.filter(x => x % 2).sort((a, b) => a - b); // x % 2 is TRUE on odd bc it = 1 which is TRUTHY. AMAZING.
+    return array.map(x => x % 2 ? oddArray.shift() : x);
+}
 
-
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
 
 
