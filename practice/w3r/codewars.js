@@ -213,7 +213,7 @@ function sortArray(array) {
 
 function sortArray(array) {
     const oddArray = array.filter(x => x % 2).sort((a, b) => a - b); // x % 2 is TRUE on odd bc it = 1 which is TRUTHY. AMAZING.
-    return array.map(x => x % 2 ? oddArray.shift() : x);
+    return array.map(x => x % 2 ? oddArray.shift() : x); // if even, (x % 2 == 1  == true), then current index == oddArray.shift(), else it's even and keep it
 }
 
 // ******************************************************************
