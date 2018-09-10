@@ -220,4 +220,99 @@ function sortArray(array) {
 // *** NEXT ***
 // ******************************************************************
 
+// There is an array with some numbers. All numbers are equal except for one. Try to find it!
+// Find the unique number!
+// [1, 1, 1, 5, 1, 1] = > 5
+// [0, 0, 0, .55, 0, 0] => .55
+
+// Has to be able to tell if the first character is the unique
+// can use a count on each individual #?
+// run a map or filter on array to get the two numbers
+// return the number fr
+
+function findUniq(arr) {
+    const sortedArray = arr.sort((a, b) => a - b);
+    return sortedArray[0] == sortedArray[1] ? sortedArray[sortedArray.length - 1] : sortedArray[0];
+}
+
+// 1694ms to run
+
+// *** BEST PRACTICE ***
+
+function findUniq(arr) {
+    arr.sort((a, b) => a - b);
+    return arr[0] == arr[1] ? arr.pop() : arr[0];
+}
+// VERY SIMILAR TO MINE!!!
+// Do not need to create a new array, can simply sort the original array.
+// can actually be refactored to:
+
+function findUniq(arr) {
+    arr.sort(); // doesn't need the function inside as there will only be two dif values
+    return arr[0] == arr[1] ? arr.pop() : arr[0];
+}
+
+// *** CLEVER ***
+
+function findUniq(arr) {
+    return arr.find(n => arr.indexOf(n) === arr.lastIndexOf(n));
+}
+
+// checks the indexOf n.
+// if it's the same as the last indexOf n then it returns that number
+// Thus finding the unique number.
+// Should run faster than the best practice version as it only needs to finish looping through the array once.//#endregion
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+/* Complete the method/function so that it converts dash/underscore delimited words into camel casing.
+The first word within the output should be capitalized ONLY if the original word was capitalized */
+
+// toCamelCase("the-stealth-warrior") => "theStealthWarrior"
+// toCamelCase("The_Stealth_Warrior") => "TheSTealthWarrior"
+function toCamelCase(str) {
+    let arrOfWords = str.split(/[-_]/)
+    let newArr = str.split(/[_-]/)
+            .filter(word => { if (!(word === arrOfWords[0])) return word })
+            .map(char => { return char.charAt(0).toUpperCase() + char.slice(1) });
+    return arrOfWords.shift() + newArr.join('');
+}
+
+
+// split/replace at /_/- ?
+
+// return first word as is, the rest are toUpperCase();
+
+// *** BEST PRACTICE ***
+
+function toCamelCase(str){
+    var regExp=/[-_]\w/ig;
+    return str.replace(regExp,function(match){
+          return match.charAt(1).toUpperCase();
+     });
+}
+
+// Refactored version of the best practice, but is it harder to understand or necessary??
+// /[-_]\w/ig will find a dash or underscore followed by a char
+// toCamelCase("the_stealth_warrior") => "_s" "_w"
+// it runs these chars through the anon function and makes charAt(1) uppercase, then replaces _s with S
+// _s gets replaced with a capital S
+// _w gets replaced with a capital W
+
+function toCamelCase(str) {
+    return str.replace(/[-_]\w/ig, match => match.charAt(1).toUpperCase());
+}
+
+function toCamelCase(str) {
+    return str.replace(/[-_]\w/ig, match => {
+        console.log(match);
+        match.charAt(1).toUpperCase() });
+}
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
 
