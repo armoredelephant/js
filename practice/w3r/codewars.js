@@ -315,4 +315,46 @@ function toCamelCase(str) {
 // *** NEXT ***
 // ******************************************************************
 
+/* 
+Write a function that will return the count of distinct case-insensitive alphabetical characters
+and numeric digits that occur more than once in the input string. The input string can be assumed to
+contain only alphabets and numberic digits.
+*/
 
+// if any number/letter occurs more than once, it's +1 for that letter.
+// "aabBcde" => 2
+//  "aA11" => 2
+
+function duplicateCount(text) {
+    let charArray = text.toLowerCase().split(''),
+        uniqueArray = charArray.filter((e, i) => charArray.lastIndexOf(e) === i),
+        results = 0;
+
+    for (let char of uniqueArray) {
+        if (charArray.indexOf(char) != charArray.lastIndexOf(char)) results++;
+    }
+    
+    return results;
+}
+
+// *** Best Practice ***
+
+// It's a one liner....
+
+function duplicateCount(text){
+    return (text.toLowerCase().split('').sort().join('').match(/([^])\1+/g) || []).length;
+  }
+
+//   sets text to lowercase, splits it into an array, sorts, then rejoins
+// "11Aa3345" => "11aa3345" => [1,1,a,a,3,3,4,5] => [1,1,3,3,4,5,a,a]  => "113345aa"
+// 1+ matches one time + matches 1 is how many times it matches
+// [] denotes a character class
+// ( ) denotes a capturing group
+// ^ matches beginning of input
+// ([^]) checks first of every character in string and 1+ checks if there is one more. 
+// If it matches itself once, then the letter is added to array, or its an empty array
+// returns the arrays length which will either have matched letters or be empty.
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
