@@ -327,7 +327,7 @@ contain only alphabets and numberic digits.
 
 function duplicateCount(text) {
     let charArray = text.toLowerCase().split(''),
-        uniqueArray = charArray.filter((e, i) => charArray.lastIndexOf(e) === i),
+        uniqueArray = charArray.filter((e, i) => charArray.lastIndexOf(e) === i), // had to google. Will return an array containing each unique character from the array that was filterd
         results = 0;
 
     for (let char of uniqueArray) {
