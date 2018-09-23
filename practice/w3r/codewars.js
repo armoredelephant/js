@@ -521,4 +521,52 @@ aDistance = 0
 
 // has to be hours/minutes/seconds
 
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+// Opposites Attract
+
+/*
+If One flower has an even number and the other has an odd number, then they are in love
+Write a function that will take the number of petals of each flower and return true if they are in love
+and false if they are not.
+*/
+
+(function inLove() {
+    // generate two random numbers
+    let male = Math.round(Math.random() * 1),
+        female = Math.round(Math.random() * 1);
+    // if one is odd and one is even then return true : false
+    return (male !== female) ?
+            true :
+            false;
+})();
+
+// lovefunc(1,4) => true
+
+function lovefunc(flower1, flower2) {
+    let arr = [flower1, flower2]; 
+    if (arr.filter( flower =>  flower % 2 == 0).length === 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function lovefunc(flower1, flower2) {
+    return [flower1, flower2].filter( flower => flower % 2 == 0).length === 1 ?
+            true :
+            false;
+}
+
+// *** BEST ANSWER ***
+
+function lovefunc(flower1, flower2) {
+    return flower1 % 2 !== flower2 % 2;
+}
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
 
