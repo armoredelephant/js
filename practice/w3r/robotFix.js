@@ -65,7 +65,6 @@ dropped off, the robots destination.) and an address(where it's delivered).
 The move method takes in a destination as an argument.
 If the roadGraph[this.place] does not include the passed through destination, then it returns "this",
 current object. 
-
 ex. newVillage => VillageState {place: "Post Office", parcels: Array{1}}
 newVillage.move("Farm"); => VillageState {place: "Post Office", parcels: Array{1}};
 
