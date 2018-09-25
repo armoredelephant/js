@@ -59,7 +59,8 @@ VillageState class is what keeps track of the state.
 IT has a constructor that sets this.parcels and this.place for the current state.
 this.place will be where the robot is in it's current state.
 this.parcels will be an array containing objetcs for each parcel. Each object within the
-parcels array will have a place(where it's picked up) and an address(where it's delivered).
+parcels array will have a place(where it's picked up, or if already picked up but hasn't been 
+dropped off, the robots destination.) and an address(where it's delivered).
 
 The move method takes in a destination as an argument.
 If the roadGraph[this.place] does not include the passed through destination, then it returns "this",
