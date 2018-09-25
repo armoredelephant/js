@@ -208,3 +208,58 @@ function goalOrientedRobot({place, parcels}, route) { // takes in an object with
     return {direction: route[0], memory: route.slice(1)}; // uses the first index of route for the direction, and then memory is every other index of route
 }
 
+// ******************************************************************
+// *** EXCERCISE 1 ***
+// ******************************************************************
+
+function countSteps(state, robot, memory) {
+    for (steps = 0;; steps++) {
+        if (state.parcels.length == 0) return steps;
+        let action = robot(state, memory);
+        state = state.move(action.direction);
+        memory = action.memory;
+    }
+}
+
+function compareRobots(robot1, memory1, robot2, memory2) {
+    // generate 100 tasks
+    // function that sets a task, and has each robot check that task
+    // pushes turns of that task to r1Turns, r2Turns arrays, generates a next task until r1Turns.length = 100
+    // each robot needs to complete the 100 tasks
+
+    // store turns of each robot into an array
+    let r1Turns = [],
+        r2Turns = [];
+    for (let i = 0; i < 100; i++) {
+        let state = VillageState.random();
+        r1Turns.push(countSteps(state, robot1, memory1));
+        r2Turns.push(countSteps(state, robot2, memory2));
+    }
+    console.log(`Robot 1 needed ${r1Turns.map((a, b) => a + b) / 100} steps per task`);
+    console.log(`Robot 2 needed ${r2Turns.map((a, b) => a + b) / 100} steps per task `);
+}
+
+compareRobots(routeRobot, [], goalOrientedRobot, []);
+
+
+function countSteps(state, robot, memory) {
+  for (let steps = 0;; steps++) {
+    if (state.parcels.length == 0) return steps;
+    let action = robot(state, memory);
+    state = state.move(action.direction);
+    memory = action.memory;
+  }
+}
+
+function compareRobots(robot1, memory1, robot2, memory2) {
+  let total1 = 0, total2 = 0;
+  for (let i = 0; i < 100; i++) {
+    let state = VillageState.random();
+    total1 += countSteps(state, robot1, memory1);
+    total2 += countSteps(state, robot2, memory2);
+  }
+  console.log(`Robot 1 needed ${total1 / 100} steps per task`)
+  console.log(`Robot 2 needed ${total2 / 100}`)
+}
+
+compareRobots(routeRobot, [], goalOrientedRobot, []);
