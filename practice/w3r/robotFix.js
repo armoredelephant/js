@@ -44,7 +44,6 @@ will also set: graph => Bob's House: ["Alice's House"]
         graph[from].push(to);
       }
     }
-    console.log(edges.map(r => r.split("-")));
     for (let [from, to] of edges.map(r => r.split("-"))) {
       addEdge(from, to);
       addEdge(to, from);
@@ -212,6 +211,13 @@ is the new array of parcels that was randomly selected.
 // *** randomRobot ***
 // ******************************************************************
 
+/*
+This is the most basic of robots.
+It simply takes in the current state, and then randomly choosed a direction to move in.
+randomPick() is passed through roadGraph[state.place].
+It will continue going to randomly places until it picks up each parcel and delivers
+*/
+
   function randomRobot(state) {
     return {direction: randomPick(roadGraph[state.place])};
   }
@@ -220,6 +226,12 @@ is the new array of parcels that was randomly selected.
 // *** routeRobot***
 // ******************************************************************
 
+/*
+Here we create a mailRoute array. This array maps a single route that takes us to each location.
+After one loop, we can then repeat the route, and will be able to deliver each parcel on the
+second rotation
+*/
+
   var mailRoute = [
     "Alice's House", "Cabin", "Alice's House", "Bob's House",
     "Town Hall", "Daria's House", "Ernie's House",
@@ -227,20 +239,70 @@ is the new array of parcels that was randomly selected.
     "Marketplace", "Post Office"
   ];
   
+/*
+The routeRobot takes in a state and a memory.
+If memory.length is 0, then he's been through the entire route. (we set memory to be the mailRoute)
+Each time this robot is ran, it returns the direction(place) from memory[0], and then returns 
+the rest of the memory by slicing(1).
+*/
+
   function routeRobot(state, memory) {
     if (memory.length == 0) {
       memory = mailRoute;
     }
     return {direction: memory[0], memory: memory.slice(1)};
   }
+
+/*
+The findRoute function takes in a graph(our roadGraph), and a from & to
+We create a new array that will store objects with an "at" property, which will store the from
+and a "route" properly that will store an empty array.
+We bind this new array to work.
+
+We then have a for loop that will continue to run until i == work.length.
+Since we store tha value of from into work, it will at least have a length of 1 and run once.
+Starting out it would be work[0] = {at: "Post Office", route: []};
+then we loop through the graph array, specifically using the key that's the value of the current at:
+ex. work[0] = {at: "Post Office", route: []} => 
+graph[at] = graph["Post Office"]: ["Alice's House", "Marketplace"];
+
+So it will loop through the array stored in that key of graph, Alice's House and Marketplace, aka
+the possible destinations from the post office
+
+If that destination/place == the to/destination, then the route stores that place/destination,
+aka if the goal/destination is found, then use that route.
+If the key is the place we need to go to delivery a parcel, add it to the route. For each iteration
+of work it will check every key to see if the parcel needs to be delivered there,
+and add that as a possible route. From A to B, we are checking all A posibilities.
+
+
+
+Then we run array.prototype.some() on work. work["Post Office"]: ["Alice's House", "Marketplace"]
+If work["Post Office"]: doesn't contain the place (key passed through), then push that object into
+the work array. Say "Bob's House" was the key from graph[at] aka place.
+work = [{at: "Post Office", route: []}, {at: "Bob's House", route: ["Bob's House"]}];
+
+I'm lost.
+
+
+// work.push({at: obj["at"], route: route.concat(obj["at"])});
+// => 2
+// work
+// [{...}, {...}]
+// 0: {at: "one", route: Array(1)}
+// at: "one"
+// route: ["one"];
+*/
   
   function findRoute(graph, from, to) {
     let work = [{at: from, route: []}];
     for (let i = 0; i < work.length; i++) {
       let {at, route} = work[i];
+      console.log(work[i]);
       for (let place of graph[at]) {
         if (place == to) return route.concat(place);
         if (!work.some(w => w.at == place)) {
+          console.log({at: place, route: route.concat(place)});
           work.push({at: place, route: route.concat(place)});
         }
       }
@@ -251,11 +313,35 @@ is the new array of parcels that was randomly selected.
 // *** goalOriented Robot***
 // ******************************************************************
   
+/*
+the goalOrientedRobot takes in an object of places and parcels, given by the current state,
+and a route/memory.
+
+if the route.length is 0, then build a route.
+
+we pull parcels[0] from te object and bind it to parcel. The parcels array will be
+updated for each state.
+
+If the current location of the parcel is not our current location in the state,
+then we find a route to that parcel by running findRoute() and passing through our roadGraph,
+current location(place/from), and parcel.place(to/place of parcel).
+
+If the current location of the parcel is our current location, we use build a new route using
+findRoute(), and passing through our roadGraph, current location in the state, and where the parcel
+needs to be delivered to.
+
+The robot then returns the direction: route[0], and memory.slice(1);
+
+I'm lost.
+*/
+
+
   function goalOrientedRobot({place, parcels}, route) {
     if (route.length == 0) {
       let parcel = parcels[0];
       if (parcel.place != place) {
         route = findRoute(roadGraph, place, parcel.place);
+        console.log(route);
       } else {
         route = findRoute(roadGraph, place, parcel.address);
       }
