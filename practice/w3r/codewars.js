@@ -315,4 +315,258 @@ function toCamelCase(str) {
 // *** NEXT ***
 // ******************************************************************
 
+/* 
+Write a function that will return the count of distinct case-insensitive alphabetical characters
+and numeric digits that occur more than once in the input string. The input string can be assumed to
+contain only alphabets and numberic digits.
+*/
+
+// if any number/letter occurs more than once, it's +1 for that letter.
+// "aabBcde" => 2
+//  "aA11" => 2
+
+function duplicateCount(text) {
+    let charArray = text.toLowerCase().split(''),
+        uniqueArray = charArray.filter((e, i) => charArray.lastIndexOf(e) === i), // had to google. Will return an array containing each unique character from the array that was filterd
+        results = 0;
+
+    for (let char of uniqueArray) {
+        if (charArray.indexOf(char) != charArray.lastIndexOf(char)) results++;
+    }
+    
+    return results;
+}
+
+// *** Best Practice ***
+
+// It's a one liner....
+
+function duplicateCount(text){
+    return (text.toLowerCase().split('').sort().join('').match(/([^])\1+/g) || []).length;
+  }
+
+//   sets text to lowercase, splits it into an array, sorts, then rejoins
+// "11Aa3345" => "11aa3345" => [1,1,a,a,3,3,4,5] => [1,1,3,3,4,5,a,a]  => "113345aa"
+// 1+ matches one time + matches 1 is how many times it matches
+// [] denotes a character class
+// ( ) denotes a capturing group
+// ^ matches beginning of input
+// ([^]) checks first of every character in string and 1+ checks if there is one more. 
+// If it matches itself once, then the letter is added to array, or its an empty array
+// returns the arrays length which will either have matched letters or be empty.
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+/* 
+Write a program that will calculate the number of trailing zeros in a factorial of a given number.
+
+zeros(6) = 1
+# 6! = 1 * 2 * 3 * 4 * 5 * 6 = 720 --> 1 trailing zero
+
+zeros(12) = 2
+# 12! = 479001600 --> 2 trailing zeros
+
+*/
+
+function zeros (n) {
+    // function to get an array of all numbers counting up to (n)
+    function range(start, end) {
+        let rangeArray = [];
+        for (let i = start; i < end; i++) rangeArray.push(String(i));
+        console.log(rangeArray);
+        return rangeArray;
+    }
+    // binding checkedNumber to the factorial number of (n)
+    let checkedNumber = String(range(1, n + 1)
+                        .reduce((a, b) => a * b, 1));
+    console.log(checkedNumber);
+    let arr = [];
+
+    // splits the number into an array, reverses it so the 0 is at the start, joins it back, and then matches all 0 up until the first # that isn't a zero, then counts by the length of what was matched.
+    let x = checkedNumber.split('').reverse().join('');
+    return (x[0] == 0) ? arr = x.match(/.+?(?=[1-9])/).length : 0;
+}
+
+// run factorial on arg, with reduce?
+
+f
+
+// reverse the number
+
+// if 0, match 0 until it's not 0
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+/*
+IP Validation
+
+Write an algorithm that will identify a calid IPv4 address in dot-decimal format. IPs should be
+considered calid if they consist of four octets, with values between 0..255 (included)
+
+Input to the function is guaranteed to be a single string
+
+valid inputs
+1.2.3.4
+123.45.67.89
+
+invalid inputs
+1.2.3
+1.2.3.4.5
+123.456.78.90
+12.034.067.089
+
+leading zeros are considered invalid 04.02
+*/
+
+function isValidIP(str) {
+    // splits each at . and puts them into an array
+    str = str.split('.');
+    let countCheck = 0;
+    // checks if any of the numbers start with 0
+    for (let i = 0; i < str.length; i++) {
+        let count = 0;
+        if ((str[i][0] == 0) && (str[i][0].length > 1)) count++;
+        console.log(count);
+        if (count > 0) return false;
+        if ((Number(str[i]) < 255) && (Number(str[i]) >= 0)) countCheck++;
+        if (countCheck == 4) return true;
+    }
+    // number can range up to 255 between each
+
+    // can only have 4 substrings
+    return false;
+}
+
+// 0.0.0.0 is giving true
+// 123,432,123,12 is supposed to be true?
+//1.2.3.4 is failing
+
+// many people complaining in comments that this Kata's tests are bogus
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+/*
+Two tortoises names A and B must run a race. A starts with an average speed of 720 feet per hour.
+A has a 70 feet lead over B
+B's speed is 850 feet per hour
+How long will it take B to catch A?
+*/
+
+function race(v1, v2, g) {
+    let v1Speed = Math.round(v1 / 60), //distance /s
+        v2Speed = Math.round(v2 / 60), // distance /s
+        v1Distance = g, // lead
+        v2Distance = 0,
+        seconds = 0,
+        minutes = 0,
+        hours = 0,
+        total = [];
+
+        console.log(v1Speed);
+        console.log(v2Speed);
+
+    while (v1Distance != v2Distance) {
+        v1Distance += v1Speed;
+        v2Distance += v2Speed;
+            if (minutes == 60) {
+                hours++;
+                minutes = 0;
+            } else {
+                minutes++;
+            }
+            console.log(v1Distance);
+            console.log(v2Distance);
+    }
+    console.log(hours);
+    console.log(minutes);
+    minutes = minutes - 1;
+    console.log(minutes);
+    v1Distance = v1Distance - v1Speed; // subtract one minute
+    v2Distance = v2Distance - v2Speed; // subtrace one minute
+    v1Speed = v1Speed / 60; // sets speeds to per sec
+    v2Speed = v2Speed / 60;
+    
+    // while ((Math.ceil(v2Distance * 10) / 10) <= Math.ceil(v1Distance * 10) / 10) {
+        while((Math.ceil(v2Distance * 10) / 10) <= Math.ceil(v1Distance * 10) / 10) {
+        v1Distance += v1Speed;
+        v2Distance += v2Speed;
+        seconds++;
+    }
+
+
+    total.push(hours);
+    total.push(minutes);
+    total.push(seconds);
+    return total;
+}
+aDistance = 0
+
+// 720 / 60 => 12
+// 850 / 60 => 14 
+
+// Math.round(850 / 60); => B speed
+// Math.round(720 / 60); => A speed
+
+// 70 feet => distance traveled by A
+// A speed/m x 70
+// while B is catching up, A is still moving at (aSpeed);
+
+// 70 / 14 => 5 minutes to catch up to the previous speed
+
+// has to be hours/minutes/seconds
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+// Opposites Attract
+
+/*
+If One flower has an even number and the other has an odd number, then they are in love
+Write a function that will take the number of petals of each flower and return true if they are in love
+and false if they are not.
+*/
+
+(function inLove() {
+    // generate two random numbers
+    let male = Math.round(Math.random() * 1),
+        female = Math.round(Math.random() * 1);
+    // if one is odd and one is even then return true : false
+    return (male !== female) ?
+            true :
+            false;
+})();
+
+// lovefunc(1,4) => true
+
+function lovefunc(flower1, flower2) {
+    let arr = [flower1, flower2]; 
+    if (arr.filter( flower =>  flower % 2 == 0).length === 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function lovefunc(flower1, flower2) {
+    return [flower1, flower2].filter( flower => flower % 2 == 0).length === 1 ?
+            true :
+            false;
+}
+
+// *** BEST ANSWER ***
+
+function lovefunc(flower1, flower2) {
+    return flower1 % 2 !== flower2 % 2;
+}
+
+// ******************************************************************
+// *** NEXT ***
+// ******************************************************************
 
