@@ -254,44 +254,100 @@ the rest of the memory by slicing(1).
   }
 
 /*
-The findRoute function takes in a graph(our roadGraph), and a from & to
-We create a new array that will store objects with an "at" property, which will store the from
-and a "route" properly that will store an empty array.
-We bind this new array to work.
+runRobot starts a turn with the state being:
 
-We then have a for loop that will continue to run until i == work.length.
-Since we store tha value of from into work, it will at least have a length of 1 and run once.
-Starting out it would be work[0] = {at: "Post Office", route: []};
-then we loop through the graph array, specifically using the key that's the value of the current at:
-ex. work[0] = {at: "Post Office", route: []} => 
-graph[at] = graph["Post Office"]: ["Alice's House", "Marketplace"];
+Place: "Post Office" parcels: [{place: "Cabin", address: "Farm"},..., {...}];
 
-So it will loop through the array stored in that key of graph, Alice's House and Marketplace, aka
-the possible destinations from the post office
+  it sets action to be goalOrientedRobot({Place: "Post Office" parcels: 
+  [{place: "Cabin", address: "Farm"},..., {...}], []);
 
-If that destination/place == the to/destination, then the route stores that place/destination,
-aka if the goal/destination is found, then use that route.
-If the key is the place we need to go to delivery a parcel, add it to the route. For each iteration
-of work it will check every key to see if the parcel needs to be delivered there,
-and add that as a possible route. From A to B, we are checking all A posibilities.
+  So goalOrientedRobot will run one with the current state.
 
+  route.length IS 0 during initial state, so parcel becomes parcels[0] or 
+  {place: "Cabin, address: "Farm"} (parcel is located at "Cabin and needs to
+  be delivers to "Farm)
 
+  gOR checks if parcel[0].place is our current location.
+  Since it's not, we need to build a route to "Cabin to pick up the parcel.
 
-Then we run array.prototype.some() on work. work["Post Office"]: ["Alice's House", "Marketplace"]
-If work["Post Office"]: doesn't contain the place (key passed through), then push that object into
-the work array. Say "Bob's House" was the key from graph[at] aka place.
-work = [{at: "Post Office", route: []}, {at: "Bob's House", route: ["Bob's House"]}];
+  it calls findRoute() with the arguments roadGraph, our current place, and the place
+  of the parcel we need to find. It's goal will be to build the quickest route to the parcel
+  
+    findRoute(roadGraph, "Post Office", "Cabin")
+    work becomes [{at: "Post Office", route: []}]; and work.length = 1
+    Next we begin to loop over the work array, which will get larger with each iteration
+    until we run out of possible routes.
 
-I'm lost.
+    *
+    * let {at, route} = work[i] destructuring, but why? DEFINES {at, route} so we can
+    * call route.concat?!
+    * 
 
+    for (let place of graph["Post Office"]) (loop through the destinations of post office)
+    if (place == to(whereWeNeedToGo)) {
+      return route.concat(place); => [place] || ["Cabin"]
+    } So the last route that gets concacted, will be the destination.
 
-// work.push({at: obj["at"], route: route.concat(obj["at"])});
-// => 2
-// work
-// [{...}, {...}]
-// 0: {at: "one", route: Array(1)}
-// at: "one"
-// route: ["one"];
+    if (!work.some(w => w.at == place)) inverted t/f. 
+    Basically loop check through work => [{at: "Post Office"}, route: []}]
+    If Post Office is a destination of Post Office - False, which gets inverted to true
+    which runs the next line.
+
+    work.push({at: "Alice's House", route: route.concat(place)}); => 
+    {at: "Alice's House", route: ["Alice's House"]} =>
+    work => [{at: "Post Office", route: []},{at: "Alice's House", route: ["Alice's House"]};
+
+    work.length = 2, so now it will iterate over work[1]
+    
+    {at, route} = work[1] => at: "Alice's House", route: ["Alice's House"];
+
+    for (let place of graph["Alice's House"]) (loops through dest. of Alice's House)
+    => ["Bob's House", "Cabin", "Post Office"];
+
+    Is "Bob's House" where we need to go? False, run next step
+
+    Is Alice's House == to any of these destinations? False, which inverts to true
+    and runs the next line
+
+    work.push({at: "Bob's House", route: ["Alice's House", "Bob's House"]});
+
+    Is "Cabin" where we need to go? True, return route.concat(place);
+    => route: ["Alice's House", "Cabin"];
+    work[1] => {at: "Alice's House", route: ["Alice's House", "Cabin"]};
+
+    work.length has been met so the route is given back to goalOrientedRobot
+    => ["Alice's House", "Cabin"]
+
+    goalOrientedRobot returns {direction: route[0], memory: route.slice(1)}
+    => {direction: "Alice's House", memory: ["Cabin"]};
+
+      runRobot binds {direction: "Alice's House", memory: ["Cabin"]} to action
+
+      state.move() is given "Alice's House" as action.direction.
+      VillageState uses this information to move the robot and the parcels to 
+      Alice's House, and creates a new state with: 
+      his.place = "Alice's House"
+      his.parcels = [{...},{...},{...}] since we haven't picked up any parcels yet, their
+      current place has not changed.
+
+      runRobot binds the new state to state
+      runRobot binds the new sliced memory to memory => ["Cabin"];
+      runRobot console.logs where we moved to
+
+      Since the current state.parcels is not 0, we repeat the process
+
+        goalOrientedRobot is passed through the current state and memory
+        => goalOrientedRobot({place, parcels}, ["Cabin"])
+
+        since our route.length isn't 0 this time, and we have a memory, the robot
+        simply returns the next direction in the route
+
+        goalOrientedRobot => {direction: route[0], memory: route.slice(1)};
+        => {direction: "Cabin", memory: route.slice(1)};
+
+          The next state will drop off the parcel, and update the state.
+          The memory will be at 0, so the next time we go through goalOrientedRobot
+          it will need to find a new route
 */
   
   function findRoute(graph, from, to) {
@@ -312,29 +368,6 @@ I'm lost.
 // ******************************************************************
 // *** goalOriented Robot***
 // ******************************************************************
-  
-/*
-the goalOrientedRobot takes in an object of places and parcels, given by the current state,
-and a route/memory.
-
-if the route.length is 0, then build a route.
-
-we pull parcels[0] from te object and bind it to parcel. The parcels array will be
-updated for each state.
-
-If the current location of the parcel is not our current location in the state,
-then we find a route to that parcel by running findRoute() and passing through our roadGraph,
-current location(place/from), and parcel.place(to/place of parcel).
-
-If the current location of the parcel is our current location, we use build a new route using
-findRoute(), and passing through our roadGraph, current location in the state, and where the parcel
-needs to be delivered to.
-
-The robot then returns the direction: route[0], and memory.slice(1);
-
-I'm lost.
-*/
-
 
   function goalOrientedRobot({place, parcels}, route) {
     if (route.length == 0) {
