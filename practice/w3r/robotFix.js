@@ -371,6 +371,7 @@ Place: "Post Office" parcels: [{place: "Cabin", address: "Farm"},..., {...}];
 
   function goalOrientedRobot({place, parcels}, route) {
     if (route.length == 0) {
+      // sort the parcels?
       let parcel = parcels[0];
       if (parcel.place != place) {
         route = findRoute(roadGraph, place, parcel.place);
@@ -440,3 +441,92 @@ compareRobots(routeRobot, [], goalOrientedRobot, []);
 //   }
   
 //   compareRobots(routeRobot, [], goalOrientedRobot, []);
+
+// ******************************************************************
+// *** EXCERCISE 2 ***
+// ******************************************************************
+
+function myRobot({place, parcels}, route) {
+  let parcel;
+  if (route.length == 0) {
+      for (let destination of roadGraph[place]) {
+          for (let i = 0; i < parcels.length; i++) {
+              if (parcels[i].place == destination) {
+                parcel = parcels[i];
+              } else {
+                parcel = parcels[0]; 
+              }
+          }
+      }
+    if (parcel.place != place) {
+      route = findRoute(roadGraph, place, parcel.place);
+    } else {
+      route = findRoute(roadGraph, place, parcel.address);
+    }
+  }
+  return {direction: route[0], memory: route.slice(1)};
+}
+
+// it's not much, but it's faster 9 times out of 10
+
+// *** Robot #2 But Same Speed ***
+
+// function myRobotV2({place, parcels}, route) {
+//   if (route.length == 0) {
+//       let arrayOfRoutes = [],
+//           reduced = 10;
+//       parcels.forEach(p => { 
+//           if (p.place != place) {
+//               route = findRoute(roadGraph, place, p.place);
+//           } else {
+//               route = findRoute(roadGraph, place, p.address);
+//           }
+//           arrayOfRoutes.push(route);
+//       }); 
+//       for (let route of arrayOfRoutes) {
+//           if (route.length < reduced ) reduced = route;
+//       }
+//   route = reduced;
+//   }
+//   return {direction: route[0], memory: route.slice(1)};
+// }
+
+// *** Failed Robot #3 ***
+
+// function myRobotV2({place, parcels}, route) {
+//   if (route.length == 0) { // if there is no current route:
+//       let arrayOfPickupRoutes = [],
+//           arrayOfDropoffRoutes = [],
+//           reducedPickup = 10,
+//           reducedDropoff = 10;
+//       parcels.forEach(p => { // run through current parcels and run the following on each
+//            let pickupRoute = findRoute(roadGraph, place, p.place),
+//                dropoffRoute = findRoute(roadGraph, place, p.address); 
+//           arrayOfPickupRoutes.push(pickupRoute);
+//           arrayOfDropoffRoutes.push(dropoffRoute);
+//       }); 
+//       for (let route of arrayOfPickupRoutes) {
+//           if (route.length < reducedPickup) reducedPickup = route;
+//       }
+//       for (let route of arrayOfDropoffRoutes) {
+//           if (route.length < reducedDropoff) reducedDropoff = route;
+//       }
+//   reducedPickup.length < reducedDropoff.length ?
+//                       route = reducedPickup :
+//                       route = reducedDropoff;
+//   }
+//   return {direction: route[0], memory: route.slice(1)};
+// }
+
+// ******************************************************************
+// *** EXCERCISE 3 ***
+// ******************************************************************
+
+class PGroup {
+  constructor(pie) {
+  }
+}
+
+let newPGroup = new PGroup();
+newPGroup.emptyProp = Object.create(null);
+
