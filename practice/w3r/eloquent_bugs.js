@@ -83,3 +83,50 @@ function numberToString(n, base = 10) { // base by default is set to 10
  */
 
 debugger
+
+function lastElement(array) {
+    if (array.length == 0) {
+        return { failed: true };
+    } else {
+        return { element: array[array.length - 1] };
+    }
+}
+
+/*************************************************************
+ * Exceptions
+ */
+
+function promptDirection(question) { // function that will prompt a question
+    let result = prompt(question); // result is the response to the prompt
+    if (result.toLowerCase() == "left") return "L"; // if the result is left, return L
+    if (result.toLowerCase() == "right") return "R"; // if the result is right, return R
+    throw new Error("Invalid direction: " + result); // Error constructor ;throw an error if neither L nor R (if nothing was returned already)
+}
+
+function look() { // function look
+    if (promptDirection("Which way?") == "L") { // Prompts and sets the question to Which Way
+        return "a house"; // if it's L (left) => return a house
+    } else {
+        return "two angry bears"; // if it's R (right) => return two angry bears. Anything other than left or right would have thrown an error
+    }
+}
+
+try { // will try the following code
+    console.log("You see", look());
+} catch (error) { // if there is an error, log "Something went wrong: " followed by the error from the browser
+    console.log("Something went wrong: " + error); // if the error wast thrown in prompDirection, it will return that Error() as the error
+} // error will be whatever Error() was called during current state
+
+// `throw` is used to raise an exception
+// `try` block followed by `catch` is used to catch the exception
+
+/*
+    The throw keyword is used to raise an exception. Catching one is done by wrapping 
+    a piece of code in a try block, followed by the keyword catch. When the code in the 
+    try block causes an exception to be raised, the catch block is evaluated, with the 
+    name in parentheses bound to the exception value. After the catch block finishes—or if 
+    the try block finishes without problems—the program proceeds beneath the entire 
+    try/catch statement.
+*/
+
+
