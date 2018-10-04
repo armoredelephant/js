@@ -522,11 +522,58 @@ function myRobot({place, parcels}, route) {
 // *** EXCERCISE 3 ***
 // ******************************************************************
 
+// let a = PGroup.empty.add("a");
+// let ab = a.add("b");
+// let b = ab.delete("a");
+
 class PGroup {
-  constructor(pie) {
+  // this guy did a TERRIBLE job at explaining about the constructor for this. 
+  /*
+  The constructor shouldn’t be part of the class’s interface (though you’ll definitely want to use it internally).
+  What does this even fucking mean?
+  1 hour trying to figure out how to put the constructor inside a method within the class?!
+  */
+  constructor(members) {
+    this.members = members;
+  }
+
+  /*
+  the add method, checks if the already has the value and returns it if so.
+  returns a new instance of PGroup where members has the new value added.
+  a = PGroup.members: ["a"]
+  a.add("a") =>  PGroup.members: ["a"];
+  a.add("b") =>  PGroup.members: ["a","b"];
+  a => PGroup.members: ["a"]; (it did not actually modify a);
+  let ab = a.add("b") => PGroup.members: ["a", "b"];
+  let abAnd1 = ab.add({new: 1}) => PGroup.members: ["a", "b", {new: 1}];
+  */
+  add(value) {
+    if (this.has(value)) return this;
+    return new PGroup(this.members.concat([value]));
+  }
+
+  /*
+  the delete method checks if the current object even has the value, if not it returns the current object.//#endregion
+  returns a new instance with the value filtered out.
+  let filterFail = ab.delete({new: 1}) => PGroup.members: ["a", "b"];
+  let filteredABAnd1 = abAnd1.delete("b") => PGroup.members: ["a", {new: 1}];
+  */
+  delete(value) {
+    if (!this.has(value)) return this;
+    return new PGroup(this.members.filter(m => m !== value));
+  }
+
+  /*
+  checks if the current instance of the object includes the passed through value
+  is used for add() and delete()
+  */
+  has(value) {
+    return this.members.includes(value);
   }
 }
 
-let newPGroup = new PGroup();
-newPGroup.emptyProp = Object.create(null);
+PGroup.empty = new PGroup([]);
+let a = PGroup.empty.add("a");
+
+
 
