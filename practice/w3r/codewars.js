@@ -570,3 +570,49 @@ function lovefunc(flower1, flower2) {
 // *** NEXT ***
 // ******************************************************************
 
+/**
+ * The main idea is to count all occuring characters in string.
+ * If you have a string like "aba", then the result should be:
+ * { 'a': 2, 'b': 1}
+ * Empty string will return {} empty object
+ */
+
+
+function count(string) {
+    // return an object
+    let countObj = {},
+        uniqueChar = [];
+
+    for (let char of string) {
+        if (!uniqueChar.includes(char)) uniqueChar.push(char);
+    }
+
+    for (let unique of uniqueChar) {
+        let count = 0;
+
+        for (let i = 0; i < string.length; i++) {
+            if (string[i] == unique) count++;
+            countObj[unique] = count;
+        }
+    }
+
+    return countObj;
+}
+
+// *** BEST PRACTICE ***
+
+function count(string) {
+    let count = {}; // create an empty object
+    
+    string.split('').forEach(char => { // create an array containing each char and then for each:
+        count[char] ? // if that char is already a property =>
+        count[char]++ : // add to the count, else =>
+        count[char] = 1; // create the property and set the value to 1
+    });
+
+    return count; // returns the object with the new key/value pairs.
+}
+
+/** this one seems much more practical and efficient than mine.
+ * I definitely over coded.
+ */
