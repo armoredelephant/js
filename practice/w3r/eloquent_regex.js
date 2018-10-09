@@ -379,4 +379,115 @@ console.log(newAnimalCount.test("the 15 other dogs and the 15 other cows"));
  * The Mechanics of Matching
  */
 
- 
+ "the 3 pigs"
+
+ /*
+    boundary => | digit | => <| digit |> or ""(space) => {"pig", "cow", "chicken"}  => "s" or boundary
+  */
+
+
+/**
+ * At position 4, there is a word boundary, so we can move past the first box
+ * 
+ * Still at position 4, we find a digit(3), so we can move past the third box (it checks if there is another digit first)
+ * 
+ * At position 5, one path loops back to before the second (digit) box, while the other moves 
+ * forward through the box that holds a single space character. There is a space here, not a 
+ * digit, so we must take the second path.
+ * 
+ * We are now at position 6 (the start of pigs) and at the three-way branch in the diagram.
+ * We don't see cow or chicken here, but we do see pig, so we take that branch.
+ * 
+ * At position 9, after the branch, one path skips s and goes straight to to the final boundary.
+ * The other matches an "s". There is an s character here, so we go through the s box.
+ * 
+ * We're at position 10 (end of the string) and can match only a word boundary. The end of a string counts as a word
+ * boundary, so we go through the last box and have successfully matched this string.
+ */
+
+let matchBinary = /\b([01]+b|[\da-f]+h|\d+)\b/;
+
+/**
+ * Matches either a bindary number followed by a b
+ * 
+ * a hexadecimal number (that is, base 16, with the letters a to f standing for digits 10 to 15),
+ * followed by an h
+ * 
+ * or a regular decimal number with no suffix character. 
+ * 
+ */
+
+ /*
+    word boundary => 
+    "0" or "1" => <| "0" or "1" |> => "b" || 
+    digit or [a-f] => <| digit or [a-f] |> => "h" ||
+    digit => <| digit |> 
+    => word boundary
+ */
+
+ /*
+    When matching this expression, it will often happen that the top (binary) branch is
+    entered even though the input does not actually contain a bindary number.
+
+    When matching the string "103", for example, it becomes clear only at the 3 that
+    we are in the wrong branch. The string does match the expression, just not the branch
+    we are currently in
+ */
+
+ // *** The matcher will backtrack ***
+
+ // When entering a branch, it remembers it's current position, to jump back to, if the current branch isn't matched
+
+ // The matcher stops as soon as it finds a full match. It will stop after only the first one.
+
+ let findUpToX = /^.*x/;
+
+ console.log(findUpToX.test("abcxe"));
+ // => true
+
+ console.log(findUpToX.exec("abcxe"));
+ // => ["abcx", index: 0, input: "abcxe"]
+
+ /**
+  * Backtracking also happens for repition operators like + and *.
+  * If you match /^.*x/ against "abcxe", the .* part will try to consume the whole string.
+  * The engine will realize that it needs an x to match the pattern.
+  * Since there is no x past the end of the string, the start operator tries to match one character less
+  * The matcher doesn't find an x after abcx either, so it backtracks again matching the star operator to just 
+  * "abc".  Now it find an x where it needs it and reports a successful match from 0 to 4.
+  */
+
+  // abcxe > abcx > abc (everything before the x) => abcx
+
+  // Possible to do a LOT of backtracking.
+  
+  /*
+    This problem occurs when a pattern can match a piece of input in many different ways.
+    For example, if we get confused while writing a binary-number regular expression, we
+    might accidentally write something like /([01]+)+b/
+  */
+
+  let failedBinaryMatch = /([01]+)+b/;
+
+  /*
+    This will try to match some long number of zeros (0), with no training b character, the matcher
+    will first go through the entire inner loop checking easy 0/1 until it runs out. 
+    Then it notices there is no b, so it backtracks on position and goes through the outer loop once,
+    gives up again, and checks the inner loop once more.
+
+    The work basically doubles
+
+    0?0?0?0?0?0?0?0?0?0?0?0?h
+    0?0?0?0?0?0?0?0?0?0?0?
+    0?0?0?0?0?0?0?0?0?
+    0?0?0?0?0?0?0?
+    0?0?0?0?0?
+    0?0?0?0?
+    0?0?0?
+    0?0?
+    0?
+
+    Would NOT want to use + operator for the inner loop
+  */
+
+  
