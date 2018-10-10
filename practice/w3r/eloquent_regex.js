@@ -706,4 +706,118 @@ console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
  // This did work. So the example just used all special characters to not run into issues
  // and instead is any example in case ANY name value had any number of spec char.
 
+ /*************************************************************
+ * The Search Method
+ */
+
+ // the indexOf method on strings cannot be called with a regexp
+
+ // There is another method, search, that does expect a regexp.
+
+ // Like indexOf, it returns the first index on which the exp was found, or -1
+
+ console.log("  word".search(/\S/)); // \S matches a single char other than white space, so in this case, the w
+ // => 2
+
+ console.log("   ".search(/\S/)); // there is no char other than white space, so -1
+ // => -1 
+
+// There is no way to indicate that the match shouls start at a given offset/index
+
+ /*************************************************************
+ * The LastIndex Property
+ */
+
+ /*
+  The exec method also doesn't provide a convenient way to start searching at a given pos.
+  However, it does provide an inconvenient way
+ 
+  Regexp objects have properties.
+  One such prop is source, which contains the string that expression was created from.
+  Another prop is *** lastIndex *** which controls, in some limited circumstances,
+  where the next match will start.
+
+  The circumstances are that the regexp must have the global (g) or sticky (y) option 
+  enabled, and the match must happen through the exec method.
+
+  Again, a less confusing solution would have been to just allow an extra arg to be passed
+  to exec, but confusion is an essential feature of JavaScript's Regexp interface.
+  */
+
+  let pattern = /y/g;
+  pattern.lastIndex = 3;
+  let match = pattern.exec("xyzzy");
+  console.log(match.index);
+  // => 4
+  console.log(pattern.lastIndex);
+  // => 5?
+
+// match => ["y", index: 4, "xyzzy", groups: undefined]; index is where y was matched.
+// by setting pattern.lastIndex = 3, we are saying where we want to be in the index?
+
+/** 
+ * pattern => 0 initially. 
+ * Then we set it to 3
+ * Then we run pattern.exec("xyzzy") and bind to match, although the binding isn't important
+ * now that we've ran pattern.exec with the lastIndex being 3, it finds the next y from 3
+ * The y is at index 4, which makes the lastIndex +1 being 5.
+ */
+
+ let pattern = /g/g;
+ pattern.lastIndex = 3;
+ let match = pattern.exec("gtgtttg");
+ console.log(match.index); // => 6?
+ console.log(pattern.lastIndex); // => 7?
+ // both are correct.
+
+ /*
+  If the match is successful, the call to exec automatically updates the lastIndex prop
+  to point after the match. 
+
+  If no match is found, lastIndex is set back to zero, which is also the value it has
+  in a newly constructed regexp object.
+
+  The difference between the global and sticky options is that, when sticky is enabled,
+  the match will succeed only if it starts directly at lastIndex, whereas with global,
+  it will search ahead for a position where a match can start.
+ */
+
+ let global = /abc/g;
+ console.log(global.exec("xyz abc"));
+ // => ["abc"];
+
+ let sticky = /abc/y;
+ console.log(sticky.exec("xyz abc"));
+ // => null
+
+ /*
+  When using a shared regexp value for multiple exec calls, these automatic updates
+  to the lastIndex property can cause problems. Your regexp might be accidentally starting
+  at an index that was left over from a prev call.
+ */
+
+ let digit = /\d/g;
+ console.log(digit.exec("here it is: 1"));
+ // => ["1"];
+ console.log(digit.exec("and now: 1"));
+ // => null
+
+ /*
+  Another interesting effect of the global option is that it changes the way the
+  match method on a string works. When called with a global exp, instead of returning
+  an array similar to that returned by exec, match will find all matches of the pattern
+  in the string and return an array containing matched strings.
+ */
+
+ /**
+  * Be cautious with global regexp. 
+  * The cases where they are necessary:
+  * Calls to replace and paces where you want to explicitly use lastIndex
+  * are typically the only places where you want to use them
+  */
+
+/*************************************************************
+ * Looping over Matches
+ */
+
  
