@@ -645,4 +645,65 @@ console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
  * Dynamically Creating RegExp Objects
  */
 
+ // Cases when you might not know the exact pattern you need to match against.
+
+ /*
+  Say you want to look for the user's name in a piece of text and enclose it in
+  underscore characters to make it stand out. Since you will know the name only once the
+  program is actually running, you can't use the slash-based notion.
+ */
+
+ // But you can build up a string and use the RegExp constructor on that.
+
+ let name = "harry";
+ let text = "Harry is a suspicious character";
+ // let regexp = new RegExp("\\b(" + name + ")\\b", "gi");
+ let regexp = new RegExp(`\\b(${name})\\b`, "gi"); // /\b(harry)\b/gi <== the end args
+ console.log(text.replace(regexp, "_$1_")); // matches regexp and replaced with _$1_ group from constructor
+ // => _Harry_ is a suspicious character
+
+ /* 
+  When creating the \b boundary markers, we have to use two backslashes
+  because we are writing them in a normal string, not a slash-enclosed regexp.
+
+  The second argument in RegExp constructor contains the options for the reg exp.
+  In this case "gi" for global and case insesitivie
+ */
+
+ /*
+  But what if the name is "dea+hl[]rd"?
+  That would result in a nonsensical regular expression that won't match the user's name
+ */
+
+ // To work around this, we can add backslashes before any character that has special meaning
+
+ let name = "dea+hl[]rd";
+ let text = "This dea+hl[]rd guy is super annoying.";
+ let escaped = name.replace(/[\\[.+*?(){|^$]/g, "\\$&"); // we say ignore all of these char?
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+
+
+ let name = "dea+hl[]rd";
+ let text = "This dea+hl[]rd guy is super annoying.";
+ let escaped = name.replace(/[\\[+]/g, "\\$&");
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+ // This does the same thing, was the extra characters used just in case the name contained ant other char?
+
+ let name = "dea+hl[]rd$n^k3";
+ let text = "This dea+hl[]rd$n^k3 guy is super annoying.";
+ let escaped = name.replace(/[\\[+]/g, "\\$&");
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+ // this did not work.
+
+ let name = "dea+hl[]rd$n^k3";
+ let text = "This dea+hl[]rd$n^k3 guy is super annoying.";
+ let escaped = name.replace(/[\\[.+*?(){|^$]/g, "\\$&"); // we say ignore all of these char?
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+ // This did work. So the example just used all special characters to not run into issues
+ // and instead is any example in case ANY name value had any number of spec char.
+
  
