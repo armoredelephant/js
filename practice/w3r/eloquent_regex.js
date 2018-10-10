@@ -905,24 +905,24 @@ console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
  */
 
  function parseINI(string) {
-   // Start with an object to hold the top-level fields
-   let result = {};
-   let section = result;
-   string.split(/\r?\n/).forEach(line => { // creates an array where it splits by \n or \r\n, then runs a function on each index of that array "line"
-    // we have an array containing each line
-     let match; // defines the match
-     if (match = line.match(/^(\w+)=(.*)$/)) { // if there is a current match on this regexp
+  // Start with an object to hold the top-level fields
+  let result = {};
+  let section = result;
+  string.split(/\r?\n/).forEach(line => { // creates an array where it splits by \n or \r\n, then runs a function on each index of that array "line"
+  // we have an array containing each line
+    let match; // defines the match
+    if (match = line.match(/^(\w+)=(.*)$/)) { // if there is a current match on this regexp
       section[match[1]] = match[2];
-     } else if (match = line.match(/^\[(.*)\]%/)) { // if it matches [], then whatever is between the [] becomes key which has an empty object. => result["davaeorn"] = {}
-       section = result[match[1]] = {};
-     } else if (!/^s*(;.*)?%/.test(line)) {
-       throw new Error(`Line '${line}' is not valid.`);
-     }
-   });
-   return result;
- }
+    } else if (match = line.match(/^\[(.*)\]$/)) { // if it matches [], then whatever is between the [] becomes key which has an empty object. => result["davaeorn"] = {}
+      section = result[match[1]] = {};
+    } else if (!/^\s*(;.*)?$/.test(line)) {
+      throw new Error(`Line '${line}' is not valid.`);
+    }
+  });
+  return result;
+}
 
- console.log(parseINI(`
- name=Vasilis
- [address]
- city=Tessaloniki`));
+console.log(parseINI(`
+name=Vasilis
+[address]
+city=Tessaloniki`));
