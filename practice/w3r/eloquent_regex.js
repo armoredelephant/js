@@ -490,4 +490,220 @@ let matchBinary = /\b([01]+b|[\da-f]+h|\d+)\b/;
     Would NOT want to use + operator for the inner loop
   */
 
-  
+/*************************************************************
+ * The Replace Method
+ */
+
+console.log("papa".replace("p", "m"));
+// => mapa
+
+/* 
+  The first arg of replace can be a regular expression.
+  The first match of the regex is replaced.
+  When a g option (for global) is added to the regex,
+  all matches in the string will be replaced, not just the first.
+*/
+
+console.log("Borobudur".replace(/[ou]/, "a"));
+// => Barobudur
+
+console.log("Borobudur".replace(/[ou]/g, "a"));
+// => Barabadar
+
+/*
+  The real power of using regular expressions with replace, comes from the fact
+  that we can refer to matched groups in the replacement string.
+
+  For example, we say we have a big string containing the names of people, one name
+  per line, in the format Lastname, Firstname. If we want to swap these names and
+  remove the comma to get a Firstname Lastname format, we can use the following
+  code:
+*/
+
+console.log(
+  "Liskov, Barbara\nMcCarthy, John\nWadler, Philip"
+  .replace(/(\w+), (\w+)/g, "$2 $1") 
+  );
+// => Barbara Liskov
+//    John McCarthy
+//    Philip Wadler
+
+/*
+  This regex looks for a word followed by a comma and space followed by another word.
+  It groups the first word and the second word separately, and runs it globally.
+  It then swaps $1 which would be the first group in the match aka last name,
+  with $2 which is the second group in the string which is the first name.
+  This leaves us with Firstname Lastname
+*/
+
+/*
+  The $1 and $2 in the replacement string refer to the parenthesized groups in
+  the pattern. $1 is replaced by the text that matched against the first group, $2
+  by the second, and so on, up to $9. The whole match can be referred to with $&
+*/
+
+/*
+  It is possible to pass a function - rather than a string - as the second arg.
+  For each replacement, the function will be called with the matched groups (
+    as well as the whole match
+  ) as arguments, and it's return value will be inserted into the new string.
+*/
+
+let s = "the cia and fbi";
+console.log(s.replace(/\b(fbi|cia)\b/g,
+            str => str.toUpperCase())
+);
+// => the CIA and FBI
+
+let stock = "1 lemon, 2 cabbages, and 101 eggs";
+function minusOne(match, amount, unit) { // match will be exp, amount is the #, unit is item
+  amount = Number(amount) - 1; // the value of amount within the func, is 1 less than passed through
+  if (amount == 1) { // only one left, remove the 's'
+    unit = unit.slice(0, unit.length - 1); // slices the word and returns the whole word - 1 char from end
+  } else if (amount == 0) {
+    amount = "no"; // cannot be negative on stock of item
+  }
+  return `${amount} ${unit}`;
+}
+console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
+// => no lemon, 1 cabbage, and 100 eggs
+
+/**
+ * the (\d+) group ends up as the amount argument to the function
+ * the (\w+) group gets bount to unit.
+ * The function converts amount to a number.
+ * Makes an adjustment in case there is only 1 or 0 left.
+ */
+
+/*************************************************************
+ * Greed
+ */
+
+ // It is possible to use replace to remove all comments from a piece of Javascript code.
+
+ function stripComments(code) {
+   return code.replace(/\/\/.*|\/\*[^]*\*\//g, "");
+ }
+
+ console.log(stripComments("1 + /* 2 */3"));
+ // => 1 + 3
+
+ console.log(stripComments("x = 10; // ten!"));
+ // => x = 10;
+
+ console.log(stripComments("1 /* a */+/* b */ 1"));
+ // => 1 1
+
+ /**
+  * The part before the or operator matches to slash characters followed by any non-newline char.
+  * /\/\/.*
+  * 
+  * The part for multiline comments is more involved
+  * We use [^] (any character that is not in the empty set of characters)
+  * as a way to match any character.
+  * 
+  * We cannot just use a period here because block comments can continue on a new line,
+  * and the period character does not match newline characters
+  * 
+  * But the output for the last line appears to have gone wrong. Why?
+  * 
+  * The [^]* part of the expression, as I described in the section on backticking,
+  * will first match as much as it can. If that causes the next part of the patters to
+  * fail, the matcher moves back one character and tries again from there.
+  * In the example, the matcher first tries to match the whole rest of the string,
+  * and then moves back from there. 
+  * 
+  * It will find an occurence of * / after going back four characters and match that.
+  * This is not what we wanted - the intention was to match a single comment, not to
+  * go all the way to the end of the code and find the end of the last block comment.
+  * 
+  * Because of this behavior, we say the repitition operators(+, *, ?, and {}) are
+  * greedy, meaning they match as much as they can and backtrack from there.
+  * If you put a question mark after them (
+  *   +?, *?, ??, {}?
+  * )
+  * They become nongreedy and start by matching as little as possible.
+  * matching more only when the remaining pattern does not fit the smaller match.
+  * 
+  * By having the start match the smallest stretch of characters that brings us to 
+  * a * /, we consume one block comment and nothing more.
+  * 
+  */
+
+  function stripComments(code) {
+    return code.replace(/\/\/.*|\/\*[^]*?\*\//g, ""); // checks for //.* || /* [^]*? */
+  }
+
+  console.log(stripComments("1 /* a */+/* b */ 1"));
+  // => 1 + 1
+
+// A lot of bugs in regex programs can be traced to unintentionally using a greedy op.
+
+// *** Consider the non-greedy version FIRST ***
+
+/*************************************************************
+ * Dynamically Creating RegExp Objects
+ */
+
+ // Cases when you might not know the exact pattern you need to match against.
+
+ /*
+  Say you want to look for the user's name in a piece of text and enclose it in
+  underscore characters to make it stand out. Since you will know the name only once the
+  program is actually running, you can't use the slash-based notion.
+ */
+
+ // But you can build up a string and use the RegExp constructor on that.
+
+ let name = "harry";
+ let text = "Harry is a suspicious character";
+ // let regexp = new RegExp("\\b(" + name + ")\\b", "gi");
+ let regexp = new RegExp(`\\b(${name})\\b`, "gi"); // /\b(harry)\b/gi <== the end args
+ console.log(text.replace(regexp, "_$1_")); // matches regexp and replaced with _$1_ group from constructor
+ // => _Harry_ is a suspicious character
+
+ /* 
+  When creating the \b boundary markers, we have to use two backslashes
+  because we are writing them in a normal string, not a slash-enclosed regexp.
+
+  The second argument in RegExp constructor contains the options for the reg exp.
+  In this case "gi" for global and case insesitivie
+ */
+
+ /*
+  But what if the name is "dea+hl[]rd"?
+  That would result in a nonsensical regular expression that won't match the user's name
+ */
+
+ // To work around this, we can add backslashes before any character that has special meaning
+
+ let name = "dea+hl[]rd";
+ let text = "This dea+hl[]rd guy is super annoying.";
+ let escaped = name.replace(/[\\[.+*?(){|^$]/g, "\\$&"); // we say ignore all of these char?
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+
+
+ let name = "dea+hl[]rd";
+ let text = "This dea+hl[]rd guy is super annoying.";
+ let escaped = name.replace(/[\\[+]/g, "\\$&");
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+ // This does the same thing, was the extra characters used just in case the name contained ant other char?
+
+ let name = "dea+hl[]rd$n^k3";
+ let text = "This dea+hl[]rd$n^k3 guy is super annoying.";
+ let escaped = name.replace(/[\\[+]/g, "\\$&");
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+ // this did not work.
+
+ let name = "dea+hl[]rd$n^k3";
+ let text = "This dea+hl[]rd$n^k3 guy is super annoying.";
+ let escaped = name.replace(/[\\[.+*?(){|^$]/g, "\\$&"); // we say ignore all of these char?
+ let regexp = new RegExp(`\\b${escaped}\\b`, `gi`);
+ console.log(text.replace(regexp, "_$&_"));
+ // This did work. So the example just used all special characters to not run into issues
+ // and instead is any example in case ANY name value had any number of spec char.
+
+ 
