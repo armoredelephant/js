@@ -911,11 +911,20 @@ console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
   string.split(/\r?\n/).forEach(line => { // creates an array where it splits by \n or \r\n, then runs a function on each index of that array "line"
   // we have an array containing each line
     let match; // defines the match
-    if (match = line.match(/^(\w+)=(.*)$/)) { // if there is a current match on this regexp
-      section[match[1]] = match[2];
-    } else if (match = line.match(/^\[(.*)\]$/)) { // if it matches [], then whatever is between the [] becomes key which has an empty object. => result["davaeorn"] = {}
-      section = result[match[1]] = {};
-    } else if (!/^\s*(;.*)?$/.test(line)) {
+    if (match = line.match(/^(\w+)=(.*)$/)) { // searches for a ^ = start of a string => "word" => = =>"anything" => $ = end of a string | Basically it looks for a start of a string that is a ^(word)=(anything)$ where word is 1 and anything is 2
+      section[match[1]] = match[2]; // group 1 is set as a key of current section, who's value is group 2
+    // during the check on the third line
+    // since the current section is address: {} and not the original result
+    // "city" is = match[1]
+    // "TEssaloniki" is = match[2]
+    // so city becomes a key to the current address: {city: }
+    // and Tessaloniki becomes the value, address: {city: Tessaloniki};
+    } else if (match = line.match(/^\[(.*)\]$/)) { // match the start of a string where ^[anything]$ and group it to 1 so it can be called
+      section = result[match[1]] = {}; // the match is bound as a key to section with an empty object. 
+      // so the first match [address] is a key bound to result, and sets it as the current section.
+    } else if (!/^\s*(;.*)?$/.test(line)) { // test the line to see if it is blank or starts with a semicolon
+      // if true, flag as falls because it needs to be ignored.
+      // if false, flag true and throw an error.
       throw new Error(`Line '${line}' is not valid.`);
     }
   });
@@ -926,3 +935,106 @@ console.log(parseINI(`
 name=Vasilis
 [address]
 city=Tessaloniki`));
+
+// {name: "Vasilis", Address: {city: "Tessaloniki"}}
+
+/*
+  There are two kinds of significant lines (and both are checked).
+  section headers or property lines.
+  When a line is a regular property, it is stored in the current section.
+  When it is a section header [sectionheader], a new section object is created,
+  and section is set to point at it.
+/*
+
+// /^(regexp)$/ is to make sure the expression matches the whole line, not just part of it.
+
+/*
+  The pattern if (match = string.match()) is similar to the trick of using an assignment
+  as the condition for while. You often aren't sure that your call to match will succeed
+  so you can access the resulting object only inside an if statement that tests for this.
+  To not break the pleasant chain of else if forms, we assign the result of the match
+  to a binding and immediately use that assignment as the test for the if statement.
+*/
+
+/*
+  If a line is not a section header or a property, the fnction checks whether it is a comment
+  or any empty line. The part between the parentheses will match comments, and the ? makes 
+  sure it also matches lines containing only whitespace. When a line doesn't match any of
+  the expected forms, the function throws an exception.
+*/
+
+/*************************************************************
+ * International Characters
+ */
+
+ // use \u option to check against unicode
+ // can also use \p{Property=Value} => /\p{Script=Greek}/u.test("a");
+
+ /*************************************************************
+ * Exercises
+ */
+
+ // https://debuggex.com
+
+ // *** EXERCISE 1 ***
+
+ /*
+  For each of the following items, write a regexp to test whether any of the given
+  substrings occur in a string. The regular expression should match only strings containing
+  one of the substrings described. Do not worry about word boundaries unless explicitly 
+  mentioned. When your expression works, see whether you can make it any smaller.
+ */
+
+ /**
+  * 1. car and cat = /\w(car|cat)/
+  * 2. pop and prop
+  * 3. ferret, ferry, and ferrari
+  * 4. Any word ending in ious
+  * 5. A whitespace character followed by a period, comma, colon, or semicolon
+  * 6. A word longer than 6 characters
+  * 7. A word without the letter e (or E)
+  */
+
+  // Refer to the table in the chapter summary for help. Test each solution with a few test strings.
+
+  // Fill in the regular expressions
+
+verify(/(ca[tr])/, // cat or car /(cat|car)/ 
+  ["my car", "bad cats"],
+  ["camper", "high art"]);
+
+verify(/p[r]?op/, // /(pop|prop)/
+  ["pop culture", "mad props"],
+  ["plop", "prrrop"]);
+
+verify(/ferr[et|y|ari]/, // ferr[et|y|ari]
+  ["ferret", "ferry", "ferrari"],
+  ["ferrum", "transfer A"]);
+
+verify(/\w(ious)\b/, // don't worry about word boundy? ffs, the author is a troll.
+  ["how delicious", "spacious room"],
+  ["ruinous", "consciousness"]);
+
+verify(/.../,
+  ["bad punctuation ."],
+  ["escape the period"]);
+
+verify(/.../,
+  ["hottentottententen"],
+  ["no", "hotten totten tenten"]);
+
+verify(/.../,
+  ["red platypus", "wobbling nest"],
+  ["earth bed", "learning ape", "BEET"]);
+
+
+function verify(regexp, yes, no) {
+// Ignore unfinished exercises
+if (regexp.source == "...") return;
+for (let str of yes) if (!regexp.test(str)) {
+console.log(`Failure to match '${str}'`);
+}
+for (let str of no) if (regexp.test(str)) {
+console.log(`Unexpected match for '${str}'`);
+}
+}
