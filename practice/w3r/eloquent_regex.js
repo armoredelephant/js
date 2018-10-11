@@ -1015,15 +1015,15 @@ verify(/\w(ious)\b/, // don't worry about word boundy? ffs, the author is a trol
   ["how delicious", "spacious room"],
   ["ruinous", "consciousness"]);
 
-verify(/.../,
+verify(/\s[.,:;]/,
   ["bad punctuation ."],
   ["escape the period"]);
 
-verify(/.../,
+verify(/\w{7}/,
   ["hottentottententen"],
   ["no", "hotten totten tenten"]);
 
-verify(/.../,
+verify(/(\b((?!(e))\w)+\b)/i,
   ["red platypus", "wobbling nest"],
   ["earth bed", "learning ape", "BEET"]);
 
