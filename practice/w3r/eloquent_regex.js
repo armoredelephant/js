@@ -1038,3 +1038,78 @@ for (let str of no) if (regexp.test(str)) {
 console.log(`Unexpected match for '${str}'`);
 }
 }
+
+// *** EXERCISE 2 ***
+
+let replaceSingleQuote = /^'|(\W)'/g
+let text = "'I'm the cook,' he said, 'it's my job.'";
+console.log(text.replace(replaceSingleQuote, `$1"`));
+
+/**
+ * first it checks if there is a ' at the start, and will replace it
+ * 
+ * or 
+ * 
+ * if there is character that is not a word character (,.;-=) that comes before  '
+ * it is grouped as $1 and we replace the ' with $1" as to return that character with "
+ */
+
+ /*
+  The first 'I'm gets replaced by the first part of the regex
+
+  cook,' gets replaced with $1" (,")
+
+  , 'it's gets replaced with "it's
+
+  job.' gets replaced with $1"  (.")
+ */
+
+ // *** EXERCISE 3 ***
+
+// Fill in this regular expression.
+
+// passes all of the exponent => /(^\d[.]*?\d*?([e][+\-]?)[0-9]*$)/i
+  /**
+   * match where it starts with a digit
+   * has an optional decimal (.)
+   * followed by another optional digit
+   * groups an optional [e] and [+-], this is to pass 1+1. There should only be an operator here if there is an e
+   * followed by another optional digit. Using \d it was still allowing another decial, so we did [0-9] instead 
+   * the string should end $
+   * option is case insensitive /i for the optional [e]
+   */
+
+// passes all of the decimal and number => /(^[+\-]?(([\.]*\d)|(\d[\.]*))\d*?$)/
+  /**
+   * We put this all in a separate group so we can use | with the previous exp
+   * ^ for start of a string
+   * optional [+\-] goes at the start
+   * we then create another group with sub groups for the different decials
+   * this is to clear .5. or just .
+   * the first one have an optional . followed by a digit => .\d | 5.
+   * the second one which has a digit followed by an optional . => \d. | .5
+   * then we allow it to have an optional digit afterwards to 1.55
+   * then the string should end $
+   */
+
+   // ezpz it works.
+
+let number =/(^\d[.\d]*?([e][+\-]?)[0-9]*$)|(^[+\-]?(([\.]*\d)|(\d[\.]*))\d*?$)/i;
+
+// Tests:
+for (let str of ["1", "-1", "+15", "1.55", ".5", "5.",
+                 "1.3e2", "1E-4", "1e+12"]) {
+  if (!number.test(str)) {
+    console.log(`Failed to match '${str}'`);
+  }
+}
+for (let str of ["1a", "+-1", "1.2.3", "1+1", "1e4.5",
+                 ".5.", "1f5", "."]) {
+  if (number.test(str)) {
+    console.log(`Incorrectly accepted '${str}'`);
+  }
+}
+
+// FIN - will go back and review tomorrow
+
+
