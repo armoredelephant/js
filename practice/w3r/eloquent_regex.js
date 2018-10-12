@@ -1003,7 +1003,7 @@ verify(/(ca[tr])/, // cat or car /(cat|car)/
   ["my car", "bad cats"],
   ["camper", "high art"]);
 
-verify(/p[r]?op/, // /(pop|prop)/
+verify(/p[r]?op/, // /(pop|prop)/ // correct answer pr?op
   ["pop culture", "mad props"],
   ["plop", "prrrop"]);
 
@@ -1013,7 +1013,7 @@ verify(/ferr[et|y|ari]/, // ferr[et|y|ari]
 
 verify(/\w(ious)\b/, // don't worry about word boundy? ffs, the author is a troll.
   ["how delicious", "spacious room"],
-  ["ruinous", "consciousness"]);
+  ["ruinous", "consciousness"]); //correct answer /ious\b/ - still required a word boundry he said not to worry about.
 
 verify(/\s[.,:;]/,
   ["bad punctuation ."],
@@ -1023,7 +1023,7 @@ verify(/\w{7}/,
   ["hottentottententen"],
   ["no", "hotten totten tenten"]);
 
-verify(/(\b((?!(e))\w)+\b)/i,
+verify(/(\b((?!(e))\w)+\b)/i, // correct answer /\b[^\We]+\b/i
   ["red platypus", "wobbling nest"],
   ["earth bed", "learning ape", "BEET"]);
 
@@ -1041,9 +1041,9 @@ console.log(`Unexpected match for '${str}'`);
 
 // *** EXERCISE 2 ***
 
-let replaceSingleQuote = /^'|(\W)'/g
+let replaceSingleQuote = /^'|(\W)'/g // correct answer /(^|\W)'|'(\W|$)/g
 let text = "'I'm the cook,' he said, 'it's my job.'";
-console.log(text.replace(replaceSingleQuote, `$1"`));
+console.log(text.replace(replaceSingleQuote, `$1"`)); // correct answer `$1"$2`
 
 /**
  * first it checks if there is a ' at the start, and will replace it
@@ -1095,7 +1095,7 @@ console.log(text.replace(replaceSingleQuote, `$1"`));
    // ezpz it works.
 
 let number =/(^\d[.\d]*?([e][+\-]?)[0-9]*$)|(^[+\-]?(([\.]*\d)|(\d[\.]*))\d*?$)/i;
-
+// correct = /^[+\-]?(\d+(\.\d*)?|\.\d+)([eE][+\-]?\d+)?$/;
 // Tests:
 for (let str of ["1", "-1", "+15", "1.55", ".5", "5.",
                  "1.3e2", "1E-4", "1e+12"]) {
@@ -1111,5 +1111,17 @@ for (let str of ["1a", "+-1", "1.2.3", "1+1", "1e4.5",
 }
 
 // FIN - will go back and review tomorrow
+
+// correct = /^[+\-]?(\d+(\.\d*)?|\.\d+)([eE][+\-]?\d+)?$/;
+
+/**
+ * ^ begin of string => 
+ * Check for a possible [+\-]? (zero or one)=>
+ * Possible digit => decimal => digit (zero or more times) | 5.4 =>
+ * or
+ * decimal => digit (1 or more) | .5 =>
+ * e => possible +/- => digit  (this group can be zero or one) | e+20
+ * $ end of string
+ */
 
 
