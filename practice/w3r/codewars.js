@@ -616,3 +616,26 @@ function count(string) {
 /** this one seems much more practical and efficient than mine.
  * I definitely over coded.
  */
+
+ // ******************************************************************
+// *** NEXT ***
+// ******************************************************************
+
+// Extract the domain name from a URL
+
+/*
+    Write a function that when given a URL as a string, parses out just the domain name and returns it as a string.
+*/
+
+// This will def be done with regexp
+
+function domainName(url) {
+    // follows a // || follows a www.
+    // let space = url.replace(/^.\/([a-z])\..$||^.www\.([a-z]{1,}).$/, `this`);
+    let space    = url.split(/[\/\.]/);
+    let filtered = space.filter(arrayItem => arrayItem.lastIndexOf(":") != arrayItem.length - 1 && arrayItem != "www");
+    console.log(filtered);
+    return filtered[0];
+    // replace all except for group $1, which will group the domains with methods above
+    // maybe slice?    
+}
