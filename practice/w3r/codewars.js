@@ -629,13 +629,49 @@ function count(string) {
 
 // This will def be done with regexp
 
+// follows a // || follows a www.
+// let space = url.replace(/^.\/([a-z])\..$||^.www\.([a-z]{1,}).$/, `this`);
+// replace all except for group $1, which will group the domains with methods above
+// maybe slice?  
+
 function domainName(url) {
-    // follows a // || follows a www.
-    // let space = url.replace(/^.\/([a-z])\..$||^.www\.([a-z]{1,}).$/, `this`);
-    let space    = url.split(/[\/\.]/);
-    let filtered = space.filter(arrayItem => arrayItem.lastIndexOf(":") != arrayItem.length - 1 && arrayItem != "www");
-    console.log(filtered);
-    return filtered[0];
-    // replace all except for group $1, which will group the domains with methods above
-    // maybe slice?    
+    url = url.split(/[\/\.]/);
+    return url.filter(arrayItem => arrayItem.lastIndexOf(":") != arrayItem.length - 1 && arrayItem != "www")[0];
 }
+
+// Can this be done with a regex instead?
+
+// This looks like better code? Not on a single line?
+function domainName(url) {
+    url = url.split(/[\/\.]/);
+    let filteredUrl = url.filter(arrayItem => {
+        return arrayItem.lastIndexOf(":") != arrayItem.length - 1
+                &&
+                arrayItem != "www"
+    });
+    return filteredUrl[0];
+}
+
+// *** BEST PRACTICE *** 
+
+function domainName(url){
+    url = url.replace("https://", '');
+    url = url.replace("http://", '');
+    url = url.replace("www.", '');
+    return url.split('.')[0];
+};
+
+
+// *** REGEX METHOD ***
+
+function domainName(url){
+    return url.match(/(?:http(?:s)?:\/\/)?(?:w{3}\.)?([^\.]+)/i)[1];
+}
+
+function domainName(url){
+    return url.replace(/(https?:\/\/)?(www\.)?/, '').split('.')[0]
+}
+
+ // ******************************************************************
+// *** NEXT ***
+// ******************************************************************
