@@ -672,6 +672,11 @@ function domainName(url){
     return url.replace(/(https?:\/\/)?(www\.)?/, '').split('.')[0]
 }
 
+// replaces https:// 0 or more times
+// replaces www. 0 or more times
+// splits the remainder which should just be website.com at the .
+// returns the 0 index which would be the domain.
+
  // ******************************************************************
 // *** NEXT ***
 // ******************************************************************
