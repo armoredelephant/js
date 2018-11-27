@@ -680,7 +680,6 @@ function domainName(url){
  // ******************************************************************
 // *** NEXT ***
 // ******************************************************************
-
 // Array.diff
 
 /**
@@ -710,4 +709,39 @@ function array_diff(array1, array2) {
 // ******************************************************************
 // *** NEXT ***
 // ******************************************************************
+/*
+    returns true of a portion of str1 characters can be rearranged to match str2, otherwise return false.
+*/
+
+/**
+ * Only lower case letters will be used (a-z).
+ * No punctuation or digits will be included.
+ * Performance needs to be considered.
+ */
+
+ // scramble('rkqodlw', 'world') ==> True
+ // scramble('katas', 'steak') =>> False
+
+function scramble(str1, str2) {
+
+    function countChar(str, char) {
+        return str.split
+    }
+    const str1Split = str1.split(''),
+        str2Split = str2.split(''),
+        filteredStr2 = str2Split.filter(letter => str1Split.includes(letter)),
+        str2NonUniqueCharacters = str2Split.filter((v, i) => str2Split.indexOf(v) != i);
+
+        for (let i of str2NonUniqueCharacters) {
+            // need to find out if non unique char is also used more than once in str1. If not, then return false
+        }
+        
+
+
+        console.log(str1Split, str2Split, filteredStr2, nonUniqueCharacters)
+    
+    return filteredStr2.length == str2Split.length; 
+}
+
+
 
